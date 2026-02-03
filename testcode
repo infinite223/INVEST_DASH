@@ -1,0 +1,316 @@
+import React, { useState, useMemo } from "react";
+import { processOpenPositions } from "./utils/excelParser";
+import { OpenPosition } from "./types";
+import { Upload, Wallet, PieChart, TrendingUp } from "lucide-react";
+import { format } from "date-fns";
+import {
+  Bar,
+  BarChart,
+  CartesianGrid,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis,
+  Rectangle,
+} from "recharts";
+
+export default function App() {
+  const [positions, setPositions] = useState<OpenPosition[]>([]);
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      const data = await processOpenPositions(file);
+      setPositions(data);
+    }
+  };
+
+  const { totalInvested, totalProfit, totalROI } = useMemo(() => {
+    const invested = positions.reduce((sum, p) => sum + p.purchaseValue, 0);
+    const profit = positions.reduce((sum, p) => sum + p.profit, 0);
+    // Unikamy dzielenia przez zero, jeśli portfel jest pusty
+    const roi = invested !== 0 ? (profit / invested) * 100 : 0;
+
+    return {
+      totalInvested: invested,
+      totalProfit: profit,
+      totalROI: roi,
+    };
+  }, [positions]);
+
+  const chartData = useMemo(() => {
+    return [...positions].map((pos) => ({
+      name: pos.symbol,
+      value: Number(pos.purchaseValue.toFixed(2)),
+      profit: Number(pos.profit.toFixed(2)),
+    }));
+  }, [positions]);
+
+  return (
+    <div className="min-h-screen bg-[#f8fafc] p-4 md:p-10 font-sans text-slate-900">
+      <div className="max-w-6xl mx-auto">
+        {/* Header */}
+        <header className="flex flex-col md:flex-row justify-between items-center mb-12 gap-6">
+          <div>
+            <h1 className="text-3xl font-black tracking-tight text-slate-900">
+              INVEST_DASH
+            </h1>
+            <p className="text-slate-500 font-medium">Pozycje otwarte XTB</p>
+          </div>
+
+          <label className="group flex items-center gap-3 bg-indigo-600 text-white px-8 py-4 rounded-2xl cursor-pointer hover:bg-indigo-700 transition-all shadow-xl shadow-indigo-200">
+            <Upload size={20} />
+            <span className="font-bold">Wgraj raport XLSX</span>
+            <input
+              type="file"
+              className="hidden"
+              onChange={handleFile}
+              accept=".xlsx"
+            />
+          </label>
+        </header>
+
+        {positions.length > 0 ? (
+          <div className="space-y-8 animate-in fade-in duration-700">
+            {/* Sekcja Wykresów - Naprawione błędy wysokości */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+              {/* Wykres 1: Alokacja */}
+              <div className="bg-white p-8 rounded-[40px] shadow-sm border border-slate-100 min-h-[450px] flex flex-col">
+                <h3 className="text-xl font-black mb-8 text-slate-800 flex items-center gap-3">
+                  <PieChart className="text-indigo-500" /> Alokacja kapitału
+                </h3>
+                <div className="flex-1 w-full">
+                  <ResponsiveContainer width="100%" height={350}>
+                    <BarChart
+                      data={chartData}
+                      layout="vertical"
+                      margin={{ left: 10, right: 30 }}
+                    >
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        horizontal={true}
+                        vertical={false}
+                        stroke="#f1f5f9"
+                      />
+                      <XAxis type="number" hide />
+                      <YAxis
+                        dataKey="name"
+                        type="category"
+                        axisLine={false}
+                        tickLine={false}
+                        width={80}
+                        style={{
+                          fontWeight: "700",
+                          fill: "#64748b",
+                          fontSize: "12px",
+                        }}
+                      />
+                      <Tooltip
+                        cursor={{ fill: "#f8fafc" }}
+                        contentStyle={{
+                          borderRadius: "20px",
+                          border: "none",
+                          boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                        }}
+                      />
+                      <Bar
+                        dataKey="value"
+                        fill="#6366f1"
+                        radius={[0, 10, 10, 0]}
+                        barSize={20}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+
+              {/* Wykres 2: Wynik (Shape zamiast Cell) */}
+              <div className="bg-white p-8 rounded-[40px] shadow-sm border border-slate-100 min-h-[450px] flex flex-col">
+                <h3 className="text-xl font-black mb-8 text-slate-800 flex items-center gap-3">
+                  <TrendingUp className="text-emerald-500" /> Wynik operacyjny
+                  (PLN)
+                </h3>
+                <div className="flex-1 w-full">
+                  <ResponsiveContainer width="100%" height={350}>
+                    <BarChart data={chartData} margin={{ top: 10, bottom: 10 }}>
+                      <CartesianGrid
+                        strokeDasharray="3 3"
+                        vertical={false}
+                        stroke="#f1f5f9"
+                      />
+                      <XAxis
+                        dataKey="name"
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{
+                          fill: "#64748b",
+                          fontWeight: "700",
+                          fontSize: "12px",
+                        }}
+                      />
+                      <YAxis
+                        axisLine={false}
+                        tickLine={false}
+                        tick={{ fill: "#94a3b8", fontSize: "12px" }}
+                      />
+                      <Tooltip
+                        cursor={{ fill: "#f8fafc" }}
+                        contentStyle={{ borderRadius: "20px", border: "none" }}
+                      />
+                      <Bar
+                        dataKey="profit"
+                        radius={[6, 6, 6, 6]}
+                        shape={(props: any) => {
+                          const { x, y, width, height, payload } = props;
+                          const fill =
+                            payload.profit >= 0 ? "#10b981" : "#f43f5e";
+                          // Rectangle to nowy standard zamiast Cell
+                          return (
+                            <Rectangle
+                              x={x}
+                              y={y}
+                              width={width}
+                              height={height}
+                              fill={fill}
+                              radius={6}
+                            />
+                          );
+                        }}
+                      />
+                    </BarChart>
+                  </ResponsiveContainer>
+                </div>
+              </div>
+            </div>
+
+            <div className="bg-white p-10 rounded-[40px] shadow-sm border border-slate-100 flex flex-col md:flex-row items-center justify-between gap-8">
+              <div className="flex items-center gap-8">
+                <div className="h-20 w-20 bg-indigo-50 rounded-3xl flex items-center justify-center text-indigo-600 shrink-0">
+                  <Wallet size={40} />
+                </div>
+                <div>
+                  <p className="text-slate-400 font-bold uppercase tracking-widest text-xs mb-1">
+                    Łącznie zainwestowano
+                  </p>
+                  <p className="text-5xl font-black text-slate-900 tracking-tight">
+                    {totalInvested.toLocaleString("pl-PL", {
+                      minimumFractionDigits: 2,
+                    })}
+                    <span className="text-2xl ml-2 text-slate-300 font-bold tracking-normal">
+                      PLN
+                    </span>
+                  </p>
+                </div>
+              </div>
+
+              {/* Nowa sekcja Zysku/Straty */}
+              <div className="flex items-center md:items-end border-t md:border-t-0 md:border-l border-slate-100 pt-8 md:pt-0 md:pl-12 w-full md:w-auto">
+                <p className="text-slate-400 font-bold uppercase tracking-widest text-xs mb-1">
+                  Całkowity wynik (ROI)
+                </p>
+                <div className="flex items-baseline gap-3">
+                  <p
+                    className={`text-4xl font-black ${totalProfit >= 0 ? "text-emerald-500" : "text-rose-500"}`}
+                  >
+                    {totalProfit >= 0 ? "+" : ""}
+                    {totalProfit.toLocaleString("pl-PL", {
+                      minimumFractionDigits: 2,
+                    })}
+                    <span className="text-xl ml-1 font-bold">PLN</span>
+                  </p>
+                  <div
+                    className={`px-3 py-1 rounded-full text-sm font-black flex items-center gap-1 ${
+                      totalProfit >= 0
+                        ? "bg-emerald-50 text-emerald-600"
+                        : "bg-rose-50 text-rose-600"
+                    }`}
+                  >
+                    <TrendingUp
+                      size={14}
+                      className={totalProfit < 0 ? "rotate-180" : ""}
+                    />
+                    {totalROI.toFixed(2)}%
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Tabela Pozycji */}
+            <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
+              <div className="overflow-x-auto">
+                <table className="w-full text-left border-collapse">
+                  <thead>
+                    <tr className="bg-slate-50/50">
+                      <th className="px-8 py-6 text-xs font-black text-slate-400 uppercase tracking-widest">
+                        Walor
+                      </th>
+                      <th className="px-8 py-6 text-xs font-black text-slate-400 uppercase tracking-widest">
+                        Data otwarcia
+                      </th>
+                      <th className="px-8 py-6 text-xs font-black text-slate-400 uppercase tracking-widest text-right">
+                        Ilość
+                      </th>
+                      <th className="px-8 py-6 text-xs font-black text-slate-400 uppercase tracking-widest text-right">
+                        Zainwestowano
+                      </th>
+                      <th className="px-8 py-6 text-xs font-black text-slate-400 uppercase tracking-widest text-right">
+                        Wynik
+                      </th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {positions.map((pos) => (
+                      <tr
+                        key={pos.symbol}
+                        className="hover:bg-slate-50/50 transition-colors group"
+                      >
+                        <td className="px-8 py-6 font-black text-xl text-slate-800 group-hover:text-indigo-600 transition-colors italic">
+                          {pos.symbol}
+                        </td>
+                        <td className="px-8 py-6 text-slate-500 font-bold">
+                          {format(pos.openTime, "dd.MM.yyyy")}
+                        </td>
+                        <td className="px-8 py-6 text-right font-bold text-slate-600">
+                          {pos.volume.toLocaleString("pl-PL")} szt.
+                        </td>
+                        <td className="px-8 py-6 text-right font-black text-slate-800">
+                          {pos.purchaseValue.toLocaleString("pl-PL", {
+                            minimumFractionDigits: 2,
+                          })}{" "}
+                          PLN
+                        </td>
+                        <td
+                          className={`px-8 py-6 text-right font-black text-xl ${pos.profit >= 0 ? "text-emerald-500" : "text-rose-500"}`}
+                        >
+                          {pos.profit >= 0 ? "+" : ""}
+                          {pos.profit.toLocaleString("pl-PL", {
+                            minimumFractionDigits: 2,
+                          })}{" "}
+                          PLN
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        ) : (
+          /* Empty State */
+          <div className="py-40 bg-white rounded-[60px] border-2 border-dashed border-slate-200 flex flex-col items-center justify-center text-center">
+            <div className="h-24 w-24 bg-slate-50 rounded-full flex items-center justify-center text-slate-200 mb-8">
+              <Upload size={48} />
+            </div>
+            <h2 className="text-2xl font-black text-slate-800 mb-2">
+              Brak danych do wyświetlenia
+            </h2>
+            <p className="text-slate-400 font-medium max-w-sm px-6">
+              Wgraj plik .xlsx z raportem XTB, aby zobaczyć analizę swojego
+              portfela.
+            </p>
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
