@@ -1,1 +1,6 @@
 @import "tailwindcss";
+
+.recharts-wrapper *:focus,
+.recharts-wrapper *:focus-visible {
+  outline: none !important;
+}

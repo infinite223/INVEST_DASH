@@ -22,9 +22,10 @@ export interface MonthData {
 export interface Dividend {
   id: string;
   symbol: string;
-  amountPerShare: number;
+  yieldPercentage: number;
   payDate: string;
   status: "planned" | "received";
+  amountPerShare?: number;
   totalAmount?: number;
 }
 
