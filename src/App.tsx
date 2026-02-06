@@ -32,10 +32,11 @@ import {
   Cell,
 } from "recharts";
 
-export default function App() {
-  const { store, addReport, addPlannedDividend, removePlannedDividend } =
-    usePortfolio();
+type PortfolioSortKeys = "symbol" | "purchaseValue" | "profit" | "currPrice";
+type DividendSortKeys = "symbol" | "payDate" | "totalAmount";
+type SortOrder = "asc" | "desc";
 
+export default function App() {
   const [view, setView] = useState<{
     type: "years" | "months" | "details";
     id?: number | string;
@@ -46,17 +47,25 @@ export default function App() {
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
   const [pendingFile, setPendingFile] = useState<File | null>(null);
 
-  // Stan formularza dywidendy
   const [divForm, setDivForm] = useState({ symbol: "", yield: "", date: "" });
-  // --- LOGIKA OBLICZEŃ ---
+  const { store, addReport, addPlannedDividend, removePlannedDividend } =
+    usePortfolio();
 
-  const getPreviousMonthReport = (year: number, month: number) => {
-    const allReports = Object.values(store.reports);
-    return allReports.find((r) => {
-      if (month === 1) return r.year === year - 1 && r.month === 12;
-      return r.year === year && r.month === month - 1;
-    });
-  };
+  const [portfolioSort, setPortfolioSort] = useState<{
+    key: PortfolioSortKeys;
+    order: SortOrder;
+  }>({
+    key: "purchaseValue",
+    order: "desc",
+  });
+
+  const [divSort, setDivSort] = useState<{
+    key: DividendSortKeys;
+    order: SortOrder;
+  }>({
+    key: "payDate",
+    order: "asc",
+  });
 
   const calculateMonthlyDelta = (currentReport: any) => {
     const prevReport = getPreviousMonthReport(
@@ -65,6 +74,14 @@ export default function App() {
     );
     if (!prevReport) return currentReport.totalProfit;
     return currentReport.totalProfit - prevReport.totalProfit;
+  };
+
+  const getPreviousMonthReport = (year: number, month: number) => {
+    const allReports = Object.values(store.reports);
+    return allReports.find((r) => {
+      if (month === 1) return r.year === year - 1 && r.month === 12;
+      return r.year === year && r.month === month - 1;
+    });
   };
 
   const globalStats = useMemo(() => {
@@ -80,6 +97,21 @@ export default function App() {
       0,
     );
 
+    const sortedPositions = [...latestReport.positions].sort((a, b) => {
+      let aVal: any, bVal: any;
+
+      if (portfolioSort.key === "currPrice") {
+        aVal = a.currentPrice || (a.purchaseValue + a.profit) / a.volume;
+        bVal = b.currentPrice || (b.purchaseValue + b.profit) / b.volume;
+      } else {
+        aVal = a[portfolioSort.key as keyof typeof a] ?? 0;
+        bVal = b[portfolioSort.key as keyof typeof b] ?? 0;
+      }
+
+      if (portfolioSort.order === "asc") return aVal > bVal ? 1 : -1;
+      return aVal < bVal ? 1 : -1;
+    });
+
     return {
       totalInvested: latestReport.totalInvested,
       totalProfit,
@@ -87,47 +119,39 @@ export default function App() {
         latestReport.totalInvested !== 0
           ? (totalProfit / latestReport.totalInvested) * 100
           : 0,
-      latestPositions: latestReport.positions,
+      latestPositions: sortedPositions,
       reportCount: allReports.length,
     };
-  }, [store.reports]);
+  }, [store.reports, portfolioSort]);
 
-  const sortedDividends = useMemo(() => {
-    return [...(store.plannedDividends || [])]
-      .map((div) => {
-        // Jeśli dywidenda ma już totalAmount (np. historyczna z Excela), zostawiamy ją
-        if (div.status === "received" && div.totalAmount) return div;
+  const requestPortfolioSort = (key: PortfolioSortKeys) => {
+    setPortfolioSort((prev) => ({
+      key,
+      order: prev.key === key && prev.order === "desc" ? "asc" : "desc",
+    }));
+  };
 
-        // Szukamy danych o spółce w najnowszym raporcie
-        const pos = globalStats?.latestPositions.find(
-          (p) => p.symbol === div.symbol,
-        );
+  const requestDivSort = (key: DividendSortKeys) => {
+    setDivSort((prev) => ({
+      key,
+      order: prev.key === key && prev.order === "desc" ? "asc" : "desc",
+    }));
+  };
 
-        if (pos) {
-          // Wyliczamy aktualną cenę akcji (tak samo jak robisz to w tabeli)
-          const currPrice =
-            pos.currentPrice ||
-            (pos.volume > 0
-              ? (pos.purchaseValue + pos.profit) / pos.volume
-              : 0);
-
-          // Obliczamy kwotę: (Cena * Procent) * Ilość akcji
-          const calculatedAmountPerShare =
-            currPrice * (div.yieldPercentage / 100);
-          const calculatedTotal = calculatedAmountPerShare * pos.volume;
-
-          return {
-            ...div,
-            amountPerShare: calculatedAmountPerShare,
-            totalAmount: calculatedTotal,
-          };
-        }
-        return div;
-      })
-      .sort(
-        (a, b) => new Date(a.payDate).getTime() - new Date(b.payDate).getTime(),
-      );
-  }, [store.plannedDividends, globalStats]);
+  const SortIndicator = ({
+    active,
+    order,
+  }: {
+    active: boolean;
+    order: SortOrder;
+  }) => {
+    if (!active) return <span className="ml-1 opacity-20">↕</span>;
+    return (
+      <span className="ml-1 text-indigo-500">
+        {order === "asc" ? "↑" : "↓"}
+      </span>
+    );
+  };
 
   const calculateYearlyStats = (year: number) => {
     const yearReports = Object.values(store.reports)
@@ -174,15 +198,13 @@ export default function App() {
     addPlannedDividend({
       id: crypto.randomUUID(),
       symbol: divForm.symbol,
-      yieldPercentage: Number(divForm.yield), // Zapisujemy procent
+      yieldPercentage: Number(divForm.yield),
       payDate: divForm.date,
       status: "planned",
     });
 
     setDivForm({ symbol: "", yield: "", date: "" });
   };
-
-  // --- HANDLERY ---
 
   const handleUpload = async () => {
     if (pendingFile) {
@@ -207,7 +229,42 @@ export default function App() {
     new Set(Object.values(store.reports).map((r) => r.year)),
   ).sort((a, b) => b - a);
 
-  // --- WIDOK: LATA (GŁÓWNY) ---
+  const sortedDividends = useMemo(() => {
+    const baseDividends = [...(store.plannedDividends || [])].map((div) => {
+      if (div.status === "received" && div.totalAmount) return div;
+      const pos = globalStats?.latestPositions.find(
+        (p) => p.symbol === div.symbol,
+      );
+      if (pos) {
+        const currPrice =
+          pos.currentPrice ||
+          (pos.volume > 0 ? (pos.purchaseValue + pos.profit) / pos.volume : 0);
+        const amountPerShare = currPrice * (div.yieldPercentage / 100);
+        return {
+          ...div,
+          amountPerShare,
+          totalAmount: amountPerShare * pos.volume,
+        };
+      }
+      return div;
+    });
+
+    return baseDividends.sort((a, b) => {
+      let aVal = a[divSort.key as keyof typeof a] ?? 0;
+      let bVal = b[divSort.key as keyof typeof b] ?? 0;
+
+      if (divSort.key === "payDate") {
+        aVal = new Date(a.payDate).getTime();
+        bVal = new Date(b.payDate).getTime();
+      }
+
+      if (divSort.order === "asc") {
+        return aVal > bVal ? 1 : -1;
+      }
+      return aVal < bVal ? 1 : -1;
+    });
+  }, [store.plannedDividends, globalStats, divSort]);
+
   if (view.type === "years") {
     return (
       <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans text-slate-900 pb-32">
@@ -249,7 +306,7 @@ export default function App() {
                     <span className="text-sm font-normal">PLN</span>
                   </p>
                 </div>
-                <div className="bg-slate-50 p-6 rounded-[25px] shadow-lg text-slate-400 shadow-indigo-100">
+                <div className="bg-slate-50 p-6 rounded-[25px] text-slate-400 shadow-indigo-100">
                   <p className="text-[10px] font-black uppercase mb-1">
                     Global ROI
                   </p>
@@ -348,8 +405,15 @@ export default function App() {
               <table className="w-full text-left">
                 <thead>
                   <tr className="bg-slate-50/50">
-                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase">
-                      Spółka
+                    <th
+                      onClick={() => requestPortfolioSort("symbol")}
+                      className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase cursor-pointer hover:text-indigo-600 transition-colors"
+                    >
+                      Spółka{" "}
+                      <SortIndicator
+                        active={portfolioSort.key === "symbol"}
+                        order={portfolioSort.order}
+                      />
                     </th>
                     <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase text-right">
                       Ilość
@@ -357,14 +421,35 @@ export default function App() {
                     <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase text-right">
                       Śr. Cena
                     </th>
-                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase text-right">
-                      Zainwestowano
+                    <th
+                      onClick={() => requestPortfolioSort("purchaseValue")}
+                      className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase text-right cursor-pointer hover:text-indigo-600 transition-colors"
+                    >
+                      Zainwestowano{" "}
+                      <SortIndicator
+                        active={portfolioSort.key === "purchaseValue"}
+                        order={portfolioSort.order}
+                      />
                     </th>
-                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase text-right">
-                      Akt. Cena
+                    <th
+                      onClick={() => requestPortfolioSort("currPrice")}
+                      className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase text-right cursor-pointer hover:text-indigo-600 transition-colors"
+                    >
+                      Akt. Cena{" "}
+                      <SortIndicator
+                        active={portfolioSort.key === "currPrice"}
+                        order={portfolioSort.order}
+                      />
                     </th>
-                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase text-right">
-                      Zysk Total
+                    <th
+                      onClick={() => requestPortfolioSort("profit")}
+                      className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase text-right cursor-pointer hover:text-indigo-600 transition-colors"
+                    >
+                      Zysk Total{" "}
+                      <SortIndicator
+                        active={portfolioSort.key === "profit"}
+                        order={portfolioSort.order}
+                      />
                     </th>
                   </tr>
                 </thead>
@@ -484,87 +569,110 @@ export default function App() {
               <Target size={20} className="text-slate-300" />
             </div>
             <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
-              <table className="w-full text-left">
-                <thead>
-                  <tr className="bg-slate-50/50">
-                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase">
-                      Spółka
-                    </th>
-                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase">
-                      Data wypłaty
-                    </th>
-                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase text-right">
-                      Prognoza (netto)
-                    </th>
-                    <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase text-right">
-                      Akcja
-                    </th>
-                  </tr>
-                </thead>
-                <tbody className="divide-y divide-slate-50">
-                  {sortedDividends.length === 0 && (
-                    <tr>
-                      <td
-                        colSpan={4}
-                        className="px-8 py-10 text-center text-slate-400 font-bold italic"
+              <div className="overflow-x-auto">
+                <table className="w-full text-left">
+                  <thead>
+                    <tr className="bg-slate-50/50">
+                      <th
+                        onClick={() => requestDivSort("symbol")}
+                        className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase cursor-pointer hover:text-indigo-600 transition-colors"
                       >
-                        Brak zaplanowanych dywidend
-                      </td>
+                        Spółka{" "}
+                        <SortIndicator
+                          active={divSort.key === "symbol"}
+                          order={divSort.order}
+                        />
+                      </th>
+                      <th
+                        onClick={() => requestDivSort("payDate")}
+                        className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase cursor-pointer hover:text-indigo-600 transition-colors"
+                      >
+                        Data wypłaty{" "}
+                        <SortIndicator
+                          active={divSort.key === "payDate"}
+                          order={divSort.order}
+                        />
+                      </th>
+                      <th
+                        onClick={() => requestDivSort("totalAmount")}
+                        className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase text-right cursor-pointer hover:text-indigo-600 transition-colors"
+                      >
+                        Prognoza{" "}
+                        <SortIndicator
+                          active={divSort.key === "totalAmount"}
+                          order={divSort.order}
+                        />
+                      </th>
+                      <th className="px-8 py-5 text-[10px] font-black text-slate-400 uppercase text-right">
+                        Akcja
+                      </th>
                     </tr>
-                  )}
-                  {sortedDividends.map((div) => {
-                    const isHistory = new Date(div.payDate) < new Date();
-                    return (
-                      <tr
-                        key={div.id}
-                        className={`transition-colors ${isHistory ? "opacity-40 grayscale bg-slate-50/30" : "hover:bg-slate-50/50"}`}
-                      >
-                        <td className="px-8 py-5 font-black text-slate-800">
-                          <div className="flex items-center gap-2">
-                            {isHistory ? (
-                              <History size={14} />
-                            ) : (
-                              <Target size={14} className="text-indigo-500" />
-                            )}
-                            {div.symbol}
-                          </div>
-                        </td>
-                        <td className="px-8 py-5 text-slate-500 font-bold text-sm">
-                          {new Date(div.payDate).toLocaleDateString("pl-PL", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </td>
-                        <td className="px-8 py-5 text-right font-black text-emerald-500 text-lg">
-                          <div className="flex flex-col items-end">
-                            <span>
-                              +{" "}
-                              {div.totalAmount?.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                              })}{" "}
-                              PLN
-                            </span>
-                            {div.status === "planned" && (
-                              <span className="text-[9px] text-slate-400 font-normal uppercase">
-                                Est. ({div.yieldPercentage}%)
-                              </span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-8 py-5 text-right">
-                          <button
-                            onClick={() => removePlannedDividend(div.id)}
-                            className="p-2 text-slate-300 hover:text-rose-500 transition-colors"
-                          >
-                            <Trash2 size={18} />
-                          </button>
+                  </thead>
+                  <tbody className="divide-y divide-slate-50">
+                    {sortedDividends.length === 0 && (
+                      <tr>
+                        <td
+                          colSpan={4}
+                          className="px-8 py-10 text-center text-slate-400 font-bold italic"
+                        >
+                          Brak zaplanowanych dywidend
                         </td>
                       </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+                    )}
+                    {sortedDividends.map((div) => {
+                      const isHistory = new Date(div.payDate) < new Date();
+                      return (
+                        <tr
+                          key={div.id}
+                          className={`transition-colors ${isHistory ? "opacity-40 grayscale bg-slate-50/30" : "hover:bg-slate-50/50"}`}
+                        >
+                          <td className="px-8 py-5 font-black text-slate-800">
+                            <div className="flex items-center gap-2">
+                              {isHistory ? (
+                                <History size={14} />
+                              ) : (
+                                <Target size={14} className="text-indigo-500" />
+                              )}
+                              {div.symbol}
+                            </div>
+                          </td>
+                          <td className="px-8 py-5 text-slate-500 font-bold text-sm">
+                            {new Date(div.payDate).toLocaleDateString("pl-PL", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })}
+                          </td>
+                          <td className="px-8 py-5 text-right font-black text-emerald-500 text-lg">
+                            <div className="flex flex-col items-end">
+                              <span>
+                                +{" "}
+                                {div.totalAmount?.toLocaleString(undefined, {
+                                  minimumFractionDigits: 2,
+                                })}{" "}
+                                PLN
+                              </span>
+                              {div.status === "planned" && (
+                                <span className="text-[9px] text-slate-400 font-normal uppercase">
+                                  Est. ({div.yieldPercentage}%)
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-8 py-5 text-right">
+                            <button
+                              onClick={() => removePlannedDividend(div.id)}
+                              className="p-2 text-slate-300 hover:text-rose-500 transition-colors"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })}
+                  </tbody>
+                </table>
+              </div>
             </div>
           </div>
         </div>
