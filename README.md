@@ -1,16 +1,54 @@
-# React + Vite
+# 🚀 INVEST_DASH
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**INVEST_DASH** is a modern, high-performance investment portfolio tracker built with React. It provides deep insights into monthly performance, asset allocation, and dividend forecasting by processing Excel-based brokerage reports.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## React Compiler
+## ✨ Key Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+* **📊 Dynamic Portfolio Analytics:** Real-time calculation of total invested capital, total profit, and Global ROI.
+* **📈 Advanced Visualization:** Interactive bar charts for asset allocation and month-over-month (MoM) net gain performance using Recharts.
+* **📂 Smart Excel Import:** Seamlessly parse `.xlsx` files to update open positions and historical dividend data.
+* **📅 Dividend Scheduler:** Plan future dividends with automated projections based on current share prices and yields.
+* **⚡ Smart Sorting:** Fully interactive tables allowing you to sort by Symbol, Purchase Value, Monthly Delta, or Dividend Date.
+* **📱 Modern UI/UX:** A sleek, "Indigo & Emerald" themed interface that is fully responsive and mobile-friendly.
 
-## Expanding the ESLint configuration
+## 🛠️ Tech Stack
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+* **Framework:** React 18 (Hooks, useMemo, Context API)
+* **Language:** TypeScript
+* **Styling:** Tailwind CSS (with Lucide React icons)
+* **Charts:** Recharts
+* **Data Parsing:** XLSX (SheetJS)
+* **Persistence:** LocalStorage via custom hooks
+
+## 🚀 Getting Started
+
+### Prerequisites
+
+* Node.js (v16 or higher)
+* npm or yarn
+
+### Installation
+
+1.  **Clone the repository:**
+2.  **Install dependencies:**
+    ```bash
+    cd invest-dash
+    npm install
+    ```
+
+3.  **Run the development server:**
+    ```bash
+    npm run dev
+    ```
+
+## 📂 Project Structure
+
+```text
+src/
+├── components/     # UI Components (Dashboard, Table, Modals)
+├── hooks/          # Custom React hooks (usePortfolio)
+├── utils/          # Excel parsers and math logic
+├── types/          # TypeScript interfaces
+└── App.tsx         # Main application logic & routing
