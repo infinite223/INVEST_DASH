@@ -107,7 +107,6 @@ export default function Dashboard({ report }: DashboardProps) {
   return (
     <div className="p-3 md:p-10 font-sans text-slate-900">
       <div className="max-w-6xl mx-auto space-y-6 md:space-y-8 animate-in fade-in duration-700">
-        {/* --- WYKRESY --- */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
           <div className="bg-white p-5 md:p-8 rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 min-h-[400px] flex flex-col">
             <h3 className="text-lg md:text-xl font-black mb-6 text-slate-800 flex items-center gap-3">
@@ -228,7 +227,6 @@ export default function Dashboard({ report }: DashboardProps) {
           </div>
         </div>
 
-        {/* --- TABELA --- */}
         <div className="bg-white rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[600px]">

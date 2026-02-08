@@ -38,7 +38,6 @@ export const PortfolioTable = ({
         </h3>
       </div>
 
-      {/* Tabela */}
       <div className="overflow-x-auto">
         <table className="w-full text-left">
           <thead>

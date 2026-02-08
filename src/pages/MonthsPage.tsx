@@ -10,8 +10,6 @@ export const MonthsPage = () => {
   const navigate = useNavigate();
   const { store } = usePortfolio();
 
-  // --- LOGIKA POMOCNICZA (Przeniesiona z App.tsx) ---
-
   const getPreviousMonthReport = (y: number, m: number) => {
     const allReports = Object.values(store.reports);
     return allReports.find((r) => {
@@ -68,8 +66,6 @@ export const MonthsPage = () => {
     };
   };
 
-  // --- PRZYGOTOWANIE DANYCH DO RENDEROWANIA ---
-
   const currentYear = Number(year);
   const monthsInYear = Object.values(store.reports)
     .filter((r) => r.year === currentYear)
@@ -80,7 +76,6 @@ export const MonthsPage = () => {
   return (
     <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans">
       <div className="max-w-7xl mx-auto">
-        {/* Przycisk powrotu */}
         <button
           onClick={() => navigate("/")}
           className="group flex items-center gap-3 text-slate-400 font-black mb-8 hover:text-indigo-600 transition-all uppercase text-[10px] md:text-xs tracking-widest"
@@ -95,7 +90,6 @@ export const MonthsPage = () => {
           Rok {year}
         </h2>
 
-        {/* Lista miesięcy */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {monthsInYear.map((report) => {
             const deltaProfit = calculateMonthlyDelta(report);
@@ -125,7 +119,6 @@ export const MonthsPage = () => {
           )}
         </div>
 
-        {/* Podsumowanie graficzne */}
         {monthsInYear.length > 0 && (
           <YearlySummary
             yearId={year!}

@@ -7,13 +7,11 @@ import {
   processOpenPositions,
 } from "../utils/excelParser";
 
-// Komponenty
 import { YearCard } from "../components/YearCard";
 import { PortfolioTable } from "../components/PortfolioTable";
 import { DividendSection } from "../components/DividendSection";
 import { UploadModal } from "../components/UploadModal";
 
-// Typy
 import { PortfolioSortKeys, DividendSortKeys, SortOrder } from "../types";
 
 export const YearsPage = () => {
@@ -21,7 +19,6 @@ export const YearsPage = () => {
   const { store, addReport, addPlannedDividend, removePlannedDividend } =
     usePortfolio();
 
-  // --- STANY LOKALNE ---
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
   const [selectedMonth, setSelectedMonth] = useState(new Date().getMonth() + 1);
@@ -45,13 +42,12 @@ export const YearsPage = () => {
       const success = await importData(file);
       if (success) {
         alert("Dane zostały pomyślnie zaimportowane!");
-        window.location.reload(); // Odświeżamy, aby przeładować stan aplikacji
+        window.location.reload();
       } else {
         alert("Wystąpił błąd podczas importu pliku.");
       }
     }
   };
-  // --- LOGIKA POMOCNICZA ---
   const getPreviousMonthReport = (year: number, month: number) => {
     const allReports = Object.values(store.reports);
     return allReports.find((r) => {
@@ -263,7 +259,6 @@ export const YearsPage = () => {
         </div>
       )}
 
-      {/* YEARS GRID */}
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {years.map((year) => (
           <YearCard
@@ -277,7 +272,6 @@ export const YearsPage = () => {
           />
         ))}
 
-        {/* ADD NEW REPORT CARD */}
         <div className="bg-indigo-600 p-8 rounded-[40px] shadow-xl flex flex-col items-center justify-center text-white hover:bg-indigo-700 transition-all cursor-pointer group min-h-[280px]">
           <input
             type="file"
@@ -306,7 +300,6 @@ export const YearsPage = () => {
         </div>
       </div>
 
-      {/* PORTFOLIO TABLE */}
       {globalStats && (
         <PortfolioTable
           positions={globalStats.latestPositions}
@@ -320,7 +313,6 @@ export const YearsPage = () => {
         />
       )}
 
-      {/* DIVIDENDS */}
       <DividendSection
         dividends={sortedDividends}
         form={divForm}

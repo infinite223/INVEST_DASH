@@ -8,16 +8,10 @@ export const DetailsPage = () => {
   const { year, month } = useParams<{ year: string; month: string }>();
   const navigate = useNavigate();
   const { store } = usePortfolio();
-
-  // --- LOGIKA WYSZUKIWANIA RAPORTU ---
-
-  // Szukamy raportu, który pasuje do roku i miesiąca z URL
   const activeReport = Object.values(store.reports).find(
     (r) => r.year === Number(year) && r.month === Number(month),
   );
 
-  // Funkcja do obliczenia różnicy (delta) względem poprzedniego miesiąca
-  // Przeniesiona tutaj, aby strona była samowystarczalna
   const calculateMonthlyDelta = (report: any) => {
     if (!report) return 0;
 
@@ -33,7 +27,6 @@ export const DetailsPage = () => {
     return report.totalProfit - prevReport.totalProfit;
   };
 
-  // Jeśli raport nie istnieje (np. ktoś wpisał zły URL)
   if (!activeReport) {
     return (
       <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center p-6">
@@ -54,7 +47,6 @@ export const DetailsPage = () => {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] font-sans pb-20">
-      {/* PASEK NAWIGACJI (STUICKY HEADER) */}
       <div className="p-4 md:p-8 bg-white/80 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-100 mb-8 shadow-sm">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button
@@ -81,7 +73,6 @@ export const DetailsPage = () => {
         </div>
       </div>
 
-      {/* GŁÓWNY KOMPONENT DASHBOARDU */}
       <div className="max-w-7xl mx-auto px-4 md:px-8">
         <Dashboard report={{ ...activeReport, monthlyNetGain: currentDelta }} />
       </div>

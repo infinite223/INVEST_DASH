@@ -228,25 +228,63 @@ export const DividendSection = ({
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
-          {yearlyTotals.map(({ year, total }) => (
-            <div
-              key={year}
-              className="bg-white p-6 rounded-[30px] border border-slate-100 shadow-sm group hover:border-indigo-200 transition-all"
-            >
-              <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">
-                Rok {year}
-              </p>
-              <div className="flex items-baseline gap-2">
-                <p className="text-2xl font-black text-slate-800 group-hover:text-indigo-600 transition-colors">
-                  {total.toLocaleString(undefined, {
-                    minimumFractionDigits: 2,
-                  })}
-                </p>
-                <span className="text-xs font-bold text-slate-400">PLN</span>
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {yearlyTotals.map(({ year, total }) => {
+            const perMonth = total / 12;
+            const perHour = total / (365 * 24); // Średnio w roku
+
+            return (
+              <div
+                key={year}
+                className="bg-white p-6 rounded-[30px] border border-slate-100 shadow-sm group hover:border-indigo-200 transition-all flex flex-col justify-between"
+              >
+                <div>
+                  <p className="text-[10px] font-black text-slate-400 uppercase mb-1 tracking-widest">
+                    Rok {year}
+                  </p>
+                  <div className="flex items-baseline gap-2 mb-4">
+                    <p className="text-2xl font-black text-slate-800 group-hover:text-indigo-600 transition-colors">
+                      {total.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}
+                    </p>
+                    <span className="text-xs font-bold text-slate-400">
+                      PLN
+                    </span>
+                  </div>
+                </div>
+
+                <div className="space-y-2 pt-4 border-t border-slate-50">
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-black text-slate-400 uppercase">
+                      Miesięcznie
+                    </span>
+                    <span className="text-sm font-bold text-slate-700">
+                      ~{" "}
+                      {perMonth.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}{" "}
+                      zł
+                    </span>
+                  </div>
+                  <div className="flex justify-between items-center">
+                    <span className="text-[9px] font-black text-slate-400 uppercase text-indigo-500">
+                      Na godzinę (24h)
+                    </span>
+                    <span className="text-sm font-black text-indigo-600">
+                      {perHour.toLocaleString(undefined, {
+                        minimumFractionDigits: 2,
+                        maximumFractionDigits: 2,
+                      })}{" "}
+                      zł
+                    </span>
+                  </div>
+                </div>
               </div>
-            </div>
-          ))}
+            );
+          })}
 
           {yearlyTotals.length === 0 && (
             <div className="col-span-full bg-slate-50 border border-dashed border-slate-200 rounded-[30px] p-8 text-center">

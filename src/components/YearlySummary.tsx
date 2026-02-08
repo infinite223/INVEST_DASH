@@ -37,7 +37,6 @@ export const YearlySummary = ({
   return (
     <div className="bg-white rounded-[40px] p-8 md:p-12 shadow-sm border border-slate-100 animate-in slide-in-from-bottom duration-700">
       <div className="flex flex-col lg:flex-row gap-12">
-        {/* LEWA KOLUMNA: STATYSTYKI */}
         <div className="flex-1 space-y-8">
           <h3 className="text-2xl font-black text-slate-800 flex items-center gap-3 mb-4">
             <BarChart3 className="text-indigo-500" /> Podsumowanie {yearId}
@@ -93,7 +92,6 @@ export const YearlySummary = ({
           </div>
         </div>
 
-        {/* PRAWA KOLUMNA: WYKRES */}
         <div className="flex-1 min-h-[300px]">
           <p className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-6 text-center lg:text-left">
             Historia zysków (m/m)

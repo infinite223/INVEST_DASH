@@ -53,6 +53,7 @@ export const processDividendsFromExcel = async (
         : "Cash",
       amountPerShare: 0,
       totalAmount: Math.abs(parseFloat(row["Amount"] || 0)),
+      yieldPercentage: 0,
       payDate: formatExcelDate(row["Time"]),
       status: "received" as const,
     }));
