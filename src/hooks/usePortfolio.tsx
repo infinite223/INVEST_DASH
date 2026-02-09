@@ -4,7 +4,11 @@ import { MonthData, OpenPosition, PortfolioStore, Dividend } from "../types";
 export const usePortfolio = () => {
   const [store, setStore] = useState<PortfolioStore>(() => {
     const saved = localStorage.getItem("invest_dash_data");
-    const defaultStructure = { reports: {}, plannedDividends: [] };
+    const defaultStructure = {
+      reports: {},
+      plannedDividends: [],
+      isFirstVisit: true,
+    };
 
     try {
       if (!saved) return defaultStructure;
@@ -125,6 +129,10 @@ export const usePortfolio = () => {
     });
   };
 
+  const completeFirstVisit = () => {
+    setStore((prev) => ({ ...prev, isFirstVisit: false }));
+  };
+
   return {
     store,
     addReport,
@@ -133,5 +141,6 @@ export const usePortfolio = () => {
     addReceivedDividends,
     exportData,
     importData,
+    completeFirstVisit,
   };
 };

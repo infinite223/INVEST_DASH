@@ -1,6 +1,6 @@
 import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { Plus, Briefcase, Download, Upload } from "lucide-react";
+import { Plus, Briefcase, Download, Upload, UploadCloud } from "lucide-react";
 import { usePortfolio } from "../hooks/usePortfolio";
 import {
   processDividendsFromExcel,
@@ -13,11 +13,17 @@ import { DividendSection } from "../components/DividendSection";
 import { UploadModal } from "../components/UploadModal";
 
 import { PortfolioSortKeys, DividendSortKeys, SortOrder } from "../types";
+import { WelcomeModal } from "../components/WelcomeModal";
 
 export const YearsPage = () => {
   const navigate = useNavigate();
-  const { store, addReport, addPlannedDividend, removePlannedDividend } =
-    usePortfolio();
+  const {
+    store,
+    completeFirstVisit,
+    addReport,
+    addPlannedDividend,
+    removePlannedDividend,
+  } = usePortfolio();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -126,6 +132,29 @@ export const YearsPage = () => {
     };
   };
 
+  const [isDragging, setIsDragging] = useState(false);
+
+  const handleDragOver = (e: React.DragEvent) => {
+    e.preventDefault(); // Zapobiega otwarciu pliku w przeglądarce
+    setIsDragging(true);
+  };
+
+  const handleDragLeave = () => {
+    setIsDragging(false);
+  };
+
+  const handleDrop = (e: React.DragEvent) => {
+    e.preventDefault();
+    setIsDragging(false);
+
+    const file = e.dataTransfer.files?.[0];
+    if (file && file.name.endsWith(".xlsx")) {
+      // Wywołujemy Twoją logikę (tą samą co w onChange)
+      setPendingFile(file);
+      setIsModalOpen(true);
+    }
+  };
+
   const sortedDividends = useMemo(() => {
     const baseDividends = [...(store.plannedDividends || [])].map((div) => {
       if (div.status === "received" && div.totalAmount) return div;
@@ -188,14 +217,22 @@ export const YearsPage = () => {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans text-slate-900 pb-32">
+      {store.isFirstVisit && <WelcomeModal onClose={completeFirstVisit} />}
       <header className="max-w-7xl mx-auto mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
         <div>
-          <h1 className="text-3xl md:text-4xl font-black tracking-tighter italic text-slate-800">
-            INVEST_RAPORT
-          </h1>
-          <p className="text-slate-400 font-bold uppercase text-[10px] tracking-widest mt-1">
-            Portfolio Summary
-          </p>
+          <div className="flex items-center gap-3">
+            <div className="w-16 h-16 md:w-16 md:h-16 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center overflow-hidden p-1">
+              <img
+                src="/icon.png"
+                alt="App Icon"
+                className="w-full h-full object-contain"
+              />
+            </div>
+
+            <h1 className="uppercase text-3xl md:text-4xl font-black tracking-tighter italic text-slate-800">
+              assets xtb
+            </h1>
+          </div>
         </div>
 
         <div className="flex gap-3">
@@ -272,7 +309,20 @@ export const YearsPage = () => {
           />
         ))}
 
-        <div className="bg-indigo-600 p-8 rounded-[40px] shadow-xl flex flex-col items-center justify-center text-white hover:bg-indigo-700 transition-all cursor-pointer group min-h-[280px]">
+        <div
+          onDragOver={handleDragOver}
+          onDragLeave={handleDragLeave}
+          onDrop={handleDrop}
+          className={`
+        relative p-8 rounded-[40px] shadow-xl flex flex-col items-center justify-center 
+        transition-all duration-300 cursor-pointer group min-h-[280px] border-4 border-dashed
+        ${
+          isDragging
+            ? "bg-indigo-800 border-white scale-[1.02] shadow-2xl"
+            : "bg-indigo-600 border-transparent hover:bg-indigo-700 shadow-indigo-200"
+        }
+      `}
+        >
           <input
             type="file"
             onChange={(e) => {
@@ -286,17 +336,34 @@ export const YearsPage = () => {
             id="init-upload"
             accept=".xlsx"
           />
+
           <label
             htmlFor="init-upload"
             className="cursor-pointer flex flex-col items-center"
           >
-            <div className="h-16 w-16 bg-white/10 rounded-full flex items-center justify-center mb-4 group-hover:rotate-90 transition-transform duration-500">
-              <Plus size={32} />
+            <div
+              className={`
+          h-20 w-20 rounded-full flex items-center justify-center mb-6 transition-all duration-500
+          ${isDragging ? "bg-white text-indigo-600 animate-bounce" : "bg-white/10 text-white group-hover:rotate-90"}
+        `}
+            >
+              {isDragging ? <UploadCloud size={40} /> : <Plus size={40} />}
             </div>
-            <span className="font-black text-lg uppercase tracking-tight">
-              Nowy Raport
-            </span>
+
+            <div className="text-center">
+              <span className="font-black text-2xl uppercase tracking-tight text-white block mb-1">
+                {isDragging ? "Upuść plik tutaj" : "Nowy Raport"}
+              </span>
+              <p className="text-indigo-100 text-[10px] font-bold uppercase tracking-widest opacity-60">
+                Kliknij lub przeciągnij plik .xlsx
+              </p>
+            </div>
           </label>
+
+          {/* Efekt "poświaty" przy przeciąganiu */}
+          {isDragging && (
+            <div className="absolute inset-4 border-2 border-white/20 rounded-[30px] animate-pulse pointer-events-none" />
+          )}
         </div>
       </div>
 

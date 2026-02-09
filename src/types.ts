@@ -32,6 +32,7 @@ export interface Dividend {
 export interface PortfolioStore {
   reports: Record<string, MonthData>;
   plannedDividends: Dividend[];
+  isFirstVisit: boolean;
 }
 
 export type SortOrder = "asc" | "desc";

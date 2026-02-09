@@ -4,9 +4,11 @@ import {
   History,
   Trash2,
   CalendarDays,
+  ChevronDown,
+  ChevronUp,
 } from "lucide-react";
 import { DividendSortKeys, SortOrder } from "../types";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 interface DividendSectionProps {
   dividends: any[];
@@ -29,6 +31,9 @@ export const DividendSection = ({
   sortConfig,
   onRequestSort,
 }: DividendSectionProps) => {
+  // Stan zwijania tabeli harmonogramu
+  const [isTableExpanded, setIsTableExpanded] = useState(true);
+
   const yearlyTotals = useMemo(() => {
     const totals: { [key: number]: number } = {};
 
@@ -59,15 +64,15 @@ export const DividendSection = ({
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-10">
+    <div className="max-w-7xl mx-auto space-y-10 mt-8">
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-10">
         <div className="bg-white p-8 rounded-[40px] shadow-sm border border-slate-100 h-fit">
-          <h3 className="text-xl font-black mb-6 flex items-center gap-2 text-slate-800">
+          <h3 className="text-xl font-black mb-6 flex items-center gap-2 text-slate-800 uppercase italic tracking-tighter">
             <DollarSign className="text-indigo-500" /> Planuj Dywidendę
           </h3>
           <div className="space-y-4">
             <select
-              className="w-full p-4 bg-slate-50 rounded-2xl border-none font-bold text-slate-700 outline-indigo-500"
+              className="w-full p-4 bg-slate-50 rounded-2xl border-none font-bold text-slate-700 outline-indigo-500 appearance-none"
               value={form.symbol}
               onChange={(e) => onFormChange("symbol", e.target.value)}
             >
@@ -82,7 +87,7 @@ export const DividendSection = ({
             <input
               type="number"
               placeholder="Stopa dywidendy (%) np. 4.5"
-              className="w-full p-4 bg-slate-50 rounded-2xl border-none font-bold outline-indigo-500"
+              className="w-full p-4 bg-slate-50 rounded-2xl border-none font-bold outline-indigo-500 placeholder:text-slate-300"
               value={form.yield}
               onChange={(e) => onFormChange("yield", e.target.value)}
             />
@@ -96,7 +101,7 @@ export const DividendSection = ({
 
             <button
               onClick={onSave}
-              className="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 active:scale-[0.98]"
+              className="w-full bg-indigo-600 text-white font-black py-4 rounded-2xl hover:bg-indigo-700 transition-all shadow-lg shadow-indigo-100 active:scale-[0.98] uppercase tracking-wider"
             >
               DODAJ DO PLANU
             </button>
@@ -104,14 +109,35 @@ export const DividendSection = ({
         </div>
 
         <div className="lg:col-span-2 space-y-6">
-          <div className="flex justify-between items-center px-4">
-            <h3 className="text-xl font-black text-slate-800 italic uppercase tracking-tight">
-              Harmonogram Dywidend
-            </h3>
-            <Target size={20} className="text-slate-300" />
+          <div
+            className="flex justify-between items-center px-4 cursor-pointer group"
+            onClick={() => setIsTableExpanded(!isTableExpanded)}
+          >
+            <div className="flex items-center gap-3">
+              <h3 className="text-xl font-black text-slate-800 italic uppercase tracking-tight">
+                Harmonogram Dywidend
+              </h3>
+              <span className="text-xs font-bold text-slate-400">
+                ({dividends.length})
+              </span>
+            </div>
+            <div className="flex items-center gap-3 text-slate-400 group-hover:text-indigo-500 transition-colors">
+              <span className="text-[10px] font-black uppercase tracking-widest">
+                {isTableExpanded ? "Zwiń" : "Rozwiń"}
+              </span>
+              <div className="h-8 w-8 rounded-full bg-white border border-slate-100 flex items-center justify-center shadow-sm">
+                {isTableExpanded ? (
+                  <ChevronUp size={16} />
+                ) : (
+                  <ChevronDown size={16} />
+                )}
+              </div>
+            </div>
           </div>
 
-          <div className="bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
+          <div
+            className={`bg-white rounded-[40px] shadow-sm border border-slate-100 overflow-hidden transition-all duration-300 ${isTableExpanded ? "opacity-100" : "max-h-0 opacity-0 pointer-events-none"}`}
+          >
             <div className="overflow-x-auto">
               <table className="w-full text-left">
                 <thead>
@@ -152,7 +178,7 @@ export const DividendSection = ({
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-50">
-                  {dividends.length === 0 && (
+                  {dividends.length === 0 ? (
                     <tr>
                       <td
                         colSpan={4}
@@ -161,58 +187,59 @@ export const DividendSection = ({
                         Brak zaplanowanych dywidend
                       </td>
                     </tr>
-                  )}
-                  {dividends.map((div) => {
-                    const isHistory = new Date(div.payDate) < new Date();
-                    return (
-                      <tr
-                        key={div.id}
-                        className={`transition-colors ${isHistory ? "opacity-40 grayscale bg-slate-50/30" : "hover:bg-slate-50/50"}`}
-                      >
-                        <td className="px-8 py-5 font-black text-slate-800">
-                          <div className="flex items-center gap-2">
-                            {isHistory ? (
-                              <History size={14} />
-                            ) : (
-                              <Target size={14} className="text-indigo-500" />
-                            )}
-                            {div.symbol}
-                          </div>
-                        </td>
-                        <td className="px-8 py-5 text-slate-500 font-bold text-sm">
-                          {new Date(div.payDate).toLocaleDateString("pl-PL", {
-                            day: "numeric",
-                            month: "long",
-                            year: "numeric",
-                          })}
-                        </td>
-                        <td className="px-8 py-5 text-right font-black text-emerald-500 text-lg">
-                          <div className="flex flex-col items-end">
-                            <span>
-                              +{" "}
-                              {div.totalAmount?.toLocaleString(undefined, {
-                                minimumFractionDigits: 2,
-                              })}{" "}
-                              PLN
-                            </span>
-                            {div.status === "planned" && (
-                              <span className="text-[9px] text-slate-400 font-normal uppercase">
-                                Est. ({div.yieldPercentage}%)
+                  ) : (
+                    dividends.map((div) => {
+                      const isHistory = new Date(div.payDate) < new Date();
+                      return (
+                        <tr
+                          key={div.id}
+                          className={`transition-colors ${isHistory ? "opacity-40 grayscale bg-slate-50/30" : "hover:bg-slate-50/50"}`}
+                        >
+                          <td className="px-8 py-5 font-black text-slate-800 uppercase italic">
+                            <div className="flex items-center gap-2">
+                              {isHistory ? (
+                                <History size={14} />
+                              ) : (
+                                <Target size={14} className="text-indigo-500" />
+                              )}
+                              {div.symbol}
+                            </div>
+                          </td>
+                          <td className="px-8 py-5 text-slate-500 font-bold text-sm">
+                            {new Date(div.payDate).toLocaleDateString("pl-PL", {
+                              day: "numeric",
+                              month: "long",
+                              year: "numeric",
+                            })}
+                          </td>
+                          <td className="px-8 py-5 text-right font-black text-emerald-500 text-lg">
+                            <div className="flex flex-col items-end">
+                              <span>
+                                +{" "}
+                                {div.totalAmount?.toLocaleString(undefined, {
+                                  minimumFractionDigits: 2,
+                                })}{" "}
+                                PLN
                               </span>
-                            )}
-                          </div>
-                        </td>
-                        <td className="px-8 py-5 text-right">
-                          <button
-                            onClick={() => onRemove(div.id)}
-                            className="p-2 text-slate-300 hover:text-rose-500 transition-colors"
-                          >
-                            <Trash2 size={18} />
-                          </button>
-                        </td>
-                      </tr>
-                    );
-                  })}
+                              {div.status === "planned" && (
+                                <span className="text-[9px] text-slate-400 font-normal uppercase">
+                                  Est. ({div.yieldPercentage}%)
+                                </span>
+                              )}
+                            </div>
+                          </td>
+                          <td className="px-8 py-5 text-right">
+                            <button
+                              onClick={() => onRemove(div.id)}
+                              className="p-2 text-slate-300 hover:text-rose-500 transition-colors"
+                            >
+                              <Trash2 size={18} />
+                            </button>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
                 </tbody>
               </table>
             </div>
@@ -220,6 +247,7 @@ export const DividendSection = ({
         </div>
       </div>
 
+      {/* SEKCJA PODSUMOWANIA (YEARLY TOTALS) - zostaje na dole */}
       <div className="pt-4">
         <div className="flex items-center gap-3 mb-6 px-4">
           <CalendarDays className="text-indigo-500" size={24} />
@@ -231,7 +259,7 @@ export const DividendSection = ({
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
           {yearlyTotals.map(({ year, total }) => {
             const perMonth = total / 12;
-            const perHour = total / (365 * 24); // Średnio w roku
+            const perHour = total / (365 * 24);
 
             return (
               <div
@@ -264,7 +292,6 @@ export const DividendSection = ({
                       ~{" "}
                       {perMonth.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
                       })}{" "}
                       zł
                     </span>
@@ -276,7 +303,6 @@ export const DividendSection = ({
                     <span className="text-sm font-black text-indigo-600">
                       {perHour.toLocaleString(undefined, {
                         minimumFractionDigits: 2,
-                        maximumFractionDigits: 2,
                       })}{" "}
                       zł
                     </span>
@@ -285,14 +311,6 @@ export const DividendSection = ({
               </div>
             );
           })}
-
-          {yearlyTotals.length === 0 && (
-            <div className="col-span-full bg-slate-50 border border-dashed border-slate-200 rounded-[30px] p-8 text-center">
-              <p className="text-slate-400 font-bold italic">
-                Dodaj dywidendy, aby zobaczyć podsumowanie roczne
-              </p>
-            </div>
-          )}
         </div>
       </div>
     </div>

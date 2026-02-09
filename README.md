@@ -1,38 +1,42 @@
-# 🚀 INVEST_DASH
+# 🚀 ASSETS-XTB
 
-**INVEST_DASH** is a modern, high-performance investment portfolio tracker built with React. It provides deep insights into monthly performance, asset allocation, and dividend forecasting by processing Excel-based brokerage reports.
+**ASSETS-XTB** to nowoczesny, wysokowydajny tracker portfela inwestycyjnego zbudowany w React. Aplikacja oferuje głęboką analitykę wyników miesięcznych, alokacji aktywów oraz prognozowania dywidend poprzez błyskawiczne przetwarzanie raportów giełdowych z XTB.
 
+## ✨ Kluczowe funkcje
 
-
-## ✨ Key Features
-
-* **📊 Dynamic Portfolio Analytics:** Real-time calculation of total invested capital, total profit, and Global ROI.
-* **📈 Advanced Visualization:** Interactive bar charts for asset allocation and month-over-month (MoM) net gain performance using Recharts.
-* **📂 Smart Excel Import:** Seamlessly parse `.xlsx` files to update open positions and historical dividend data.
-* **📅 Dividend Scheduler:** Plan future dividends with automated projections based on current share prices and yields.
-* **⚡ Smart Sorting:** Fully interactive tables allowing you to sort by Symbol, Purchase Value, Monthly Delta, or Dividend Date.
-* **📱 Modern UI/UX:** A sleek, "Indigo & Emerald" themed interface that is fully responsive and mobile-friendly.
+- **📊 Dynamic Portfolio Analytics:** Automatyczne obliczanie zainwestowanego kapitału, całkowitego zysku oraz globalnego ROI.
+- **📈 Advanced Visualization:** Interaktywne wykresy alokacji oraz wydajności miesiąc-do-miesiąca (MoM) przy użyciu Recharts.
+- **💰 Dividend Ecosystem:**
+  - **History:** Automatyczny import wypłaconych dywidend bezpośrednio z plików Excel.
+  - **Planner:** Możliwość ręcznego planowania przyszłych dywidend z estymacją stopy zwrotu.
+  - **Yearly Totals:** Podsumowania roczne, miesięczne oraz przeliczenie pasywnego dochodu na godzinę.
+- **📂 Smart Excel Import (Drag & Drop):** Wygodny obszar wrzucania plików `.xlsx` z automatycznym parsowaniem pozycji i historii finansowej.
+- **📅 Collapsible UI:** Inteligentne, zwijane sekcje tabel (np. harmonogram dywidend), pozwalające zachować przejrzystość dashboardu.
+- **👋 Interactive Onboarding:** System "Pierwszej wizyty" z dedykowanym modalem instruktażowym ułatwiającym start.
+- **📱 Modern UI/UX:** Interfejs w stylu "Indigo & Emerald" z pełną responsywnością (mobile-friendly) i nowoczesnymi animacjami.
 
 ## 🛠️ Tech Stack
 
-* **Framework:** React 18 (Hooks, useMemo, Context API)
-* **Language:** TypeScript
-* **Styling:** Tailwind CSS (with Lucide React icons)
-* **Charts:** Recharts
-* **Data Parsing:** XLSX (SheetJS)
-* **Persistence:** LocalStorage via custom hooks
+- **Framework:** React 18
+- **Language:** TypeScript
+- **Styling:** Tailwind CSS
+- **Icons:** Lucide React
+- **Charts:** Recharts
+- **Data Parsing:** XLSX (SheetJS)
+- **Persistence:** LocalStorage (pełna prywatność – dane nie opuszczają Twojej przeglądarki)
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-* Node.js (v16 or higher)
-* npm or yarn
+- Node.js (v18 lub nowszy)
+- npm lub yarn
 
 ### Installation
 
 1.  **Clone the repository:**
 2.  **Install dependencies:**
+
     ```bash
     cd invest-dash
     npm install
@@ -47,8 +51,13 @@
 
 ```text
 src/
-├── components/     # UI Components (Dashboard, Table, Modals)
-├── hooks/          # Custom React hooks (usePortfolio)
-├── utils/          # Excel parsers and math logic
-├── types/          # TypeScript interfaces
-└── App.tsx         # Main application logic & routing
+├── assets/         # Statyczne pliki (obrazy, logo aplikacji)
+├── components/     # UI Components (Dashboard, Tables, WelcomeModal)
+├── hooks/          # Niestandardowe hooki (np. usePortfolio do obsługi stanu)
+├── pages/          # Główne widoki/strony aplikacji
+├── utils/          # Parsery Excel i pomocnicza logika matematyczna
+├── App.tsx         # Główny kontener aplikacji i routing
+├── index.css       # Style globalne Tailwind CSS
+├── main.tsx        # Punkt wejścia aplikacji React
+└── types.ts        # Współdzielone interfejsy i typy TypeScript
+```
