@@ -1,63 +1,85 @@
 # 🚀 ASSETS-XTB
 
-**ASSETS-XTB** to nowoczesny, wysokowydajny tracker portfela inwestycyjnego zbudowany w React. Aplikacja oferuje głęboką analitykę wyników miesięcznych, alokacji aktywów oraz prognozowania dywidend poprzez błyskawiczne przetwarzanie raportów giełdowych z XTB.
+**ASSETS-XTB** is a modern, high-performance investment portfolio tracker built with React. The application offers deep analytics of monthly performance, asset allocation, and dividend forecasting by instantly processing XTB stock reports.
 
-## ✨ Kluczowe funkcje
+> **🌐 Live Web Version:** [https://assets-xtb.vercel.app/](https://assets-xtb.vercel.app/)
 
-- **📊 Dynamic Portfolio Analytics:** Automatyczne obliczanie zainwestowanego kapitału, całkowitego zysku oraz globalnego ROI.
-- **📈 Advanced Visualization:** Interaktywne wykresy alokacji oraz wydajności miesiąc-do-miesiąca (MoM) przy użyciu Recharts.
+## ✨ Key Features
+
+- **📊 Dynamic Portfolio Analytics:** Automatic calculation of invested capital, total profit, and global ROI.
+- **📈 Advanced Visualization:** Interactive allocation charts and Month-over-Month (MoM) performance tracking using Recharts.
+- **🖥️ Native Desktop Experience:** Dedicated Windows application built with the **Tauri** framework – ultra-lightweight and efficient (installer size is only ~5MB!).
 - **💰 Dividend Ecosystem:**
-  - **History:** Automatyczny import wypłaconych dywidend bezpośrednio z plików Excel.
-  - **Planner:** Możliwość ręcznego planowania przyszłych dywidend z estymacją stopy zwrotu.
-  - **Yearly Totals:** Podsumowania roczne, miesięczne oraz przeliczenie pasywnego dochodu na godzinę.
-- **📂 Smart Excel Import (Drag & Drop):** Wygodny obszar wrzucania plików `.xlsx` z automatycznym parsowaniem pozycji i historii finansowej.
-- **📅 Collapsible UI:** Inteligentne, zwijane sekcje tabel (np. harmonogram dywidend), pozwalające zachować przejrzystość dashboardu.
-- **👋 Interactive Onboarding:** System "Pierwszej wizyty" z dedykowanym modalem instruktażowym ułatwiającym start.
-- **📱 Modern UI/UX:** Interfejs w stylu "Indigo & Emerald" z pełną responsywnością (mobile-friendly) i nowoczesnymi animacjami.
+  - **History:** Automatic import of paid dividends directly from Excel (.xlsx) files.
+  - **Planner:** Manual planning for future dividends with yield estimates.
+  - **Yearly Totals:** Annual and monthly summaries, including passive income per hour calculations.
+- **📂 Smart Excel Import (Drag & Drop):** Intuitive upload area for `.xlsx` files with automatic parsing of positions and financial history.
+- **👋 Interactive Onboarding:** "First-visit" system with a dedicated instructional modal to help users get started instantly.
+- **📱 Modern UI/UX:** "Indigo & Emerald" styled interface with full responsiveness and smooth animations.
 
 ## 🛠️ Tech Stack
 
-- **Framework:** React 18
-- **Language:** TypeScript
+- **Frontend:** React 18 + TypeScript
+- **Desktop Wrapper:** [Tauri](https://tauri.app/) (Rust-based)
 - **Styling:** Tailwind CSS
 - **Icons:** Lucide React
 - **Charts:** Recharts
 - **Data Parsing:** XLSX (SheetJS)
-- **Persistence:** LocalStorage (pełna prywatność – dane nie opuszczają Twojej przeglądarki)
+- **Persistence:** LocalStorage (Full privacy – data never leaves your browser or local machine)
 
 ## 🚀 Getting Started
 
 ### Prerequisites
 
-- Node.js (v18 lub nowszy)
-- npm lub yarn
+- Node.js (v18 or newer)
+- Rust (Required only for building the Windows Desktop version)
 
-### Installation
+### Installation & Web Development
 
-1.  **Clone the repository:**
-2.  **Install dependencies:**
+1. **Install dependencies:**
+   ```bash
+   npm install
+   ```
 
-    ```bash
-    cd invest-dash
-    npm install
-    ```
+````
 
-3.  **Run the development server:**
-    ```bash
-    npm run dev
-    ```
+2. **Run the development server:**
+```bash
+npm run dev
+
+````
+
+### 🖥️ Desktop Version (Windows)
+
+The application uses Tauri to provide a native experience with minimal resource consumption.
+
+1. **Run in dev mode:**
+
+```bash
+npx tauri dev
+
+```
+
+2. **Build production installer (.exe / .msi):**
+
+```bash
+npx tauri build
+
+```
+
+_The generated installer will be located in: `src-tauri/target/release/bundle/msi/_`
 
 ## 📂 Project Structure
 
 ```text
-src/
-├── assets/         # Statyczne pliki (obrazy, logo aplikacji)
-├── components/     # UI Components (Dashboard, Tables, WelcomeModal)
-├── hooks/          # Niestandardowe hooki (np. usePortfolio do obsługi stanu)
-├── pages/          # Główne widoki/strony aplikacji
-├── utils/          # Parsery Excel i pomocnicza logika matematyczna
-├── App.tsx         # Główny kontener aplikacji i routing
-├── index.css       # Style globalne Tailwind CSS
-├── main.tsx        # Punkt wejścia aplikacji React
-└── types.ts        # Współdzielone interfejsy i typy TypeScript
+├── src-tauri/      # Native Tauri files (Rust config, icons, build artifacts)
+├── src/
+│   ├── components/ # UI Components (Dashboard, Tables, WelcomeModal)
+│   ├── hooks/      # Custom hooks (Portfolio state & logic)
+│   ├── utils/      # Excel parsers and financial math helpers
+│   ├── App.tsx     # Main container and routing logic
+│   └── types.ts    # Shared TypeScript interfaces
+├── vercel.json     # Vercel hosting configuration
+└── package.json
+
 ```
