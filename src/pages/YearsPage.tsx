@@ -23,6 +23,8 @@ export const YearsPage = () => {
     addReport,
     addPlannedDividend,
     removePlannedDividend,
+    exportData,
+    importData,
   } = usePortfolio();
 
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -40,7 +42,6 @@ export const YearsPage = () => {
     key: DividendSortKeys;
     order: SortOrder;
   }>({ key: "payDate", order: "asc" });
-  const { exportData, importData } = usePortfolio();
 
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -54,6 +55,7 @@ export const YearsPage = () => {
       }
     }
   };
+
   const getPreviousMonthReport = (year: number, month: number) => {
     const allReports = Object.values(store.reports);
     return allReports.find((r) => {
@@ -71,7 +73,6 @@ export const YearsPage = () => {
     return currentReport.totalProfit - prevReport.totalProfit;
   };
 
-  // --- STATYSTYKI ---
   const globalStats = useMemo(() => {
     const allReports = Object.values(store.reports).sort((a, b) => {
       if (a.year !== b.year) return a.year - b.year;
@@ -123,7 +124,6 @@ export const YearsPage = () => {
       0,
     );
     const latestInYear = [...yearReports].sort((a, b) => b.month - a.month)[0];
-
     return {
       deltaProfit: yearlyDelta,
       roi: latestInYear?.totalInvested
@@ -133,20 +133,16 @@ export const YearsPage = () => {
   };
 
   const [isDragging, setIsDragging] = useState(false);
-
   const handleDragOver = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(true);
   };
-
   const handleDragLeave = () => {
     setIsDragging(false);
   };
-
   const handleDrop = (e: React.DragEvent) => {
     e.preventDefault();
     setIsDragging(false);
-
     const file = e.dataTransfer.files?.[0];
     if (file && file.name.endsWith(".xlsx")) {
       setPendingFile(file);
@@ -215,34 +211,34 @@ export const YearsPage = () => {
   ).sort((a, b) => b - a);
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] p-6 md:p-10 font-sans text-slate-900 pb-32">
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950 p-6 md:p-10 font-sans text-slate-900 dark:text-slate-100 pb-32 transition-colors duration-300">
       {store.isFirstVisit && <WelcomeModal onClose={completeFirstVisit} />}
-      <header className="max-w-7xl mx-auto mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+
+      <header className="max-w-7xl mx-auto mb-8 md:mb-12 flex flex-col md:flex-row md:items-end md:justify-between gap-4 md:gap-6 px-2 md:px-0">
         <div>
           <div className="flex items-center gap-3">
-            <div className="w-16 h-16 md:w-16 md:h-16 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center overflow-hidden p-1">
+            <div className="w-12 h-12 md:w-16 md:h-16 bg-white dark:bg-slate-800 rounded-2xl shadow-sm border border-slate-100 dark:border-slate-700 flex items-center justify-center overflow-hidden p-1.5">
               <img
                 src="/icon.png"
                 alt="App Icon"
-                className="w-full h-full object-contain"
+                className="w-full h-full object-contain dark:brightness-110"
               />
             </div>
-
-            <h1 className="uppercase text-3xl md:text-4xl font-black tracking-tighter italic text-slate-800">
+            <h1 className="uppercase text-2xl md:text-4xl font-black tracking-tighter italic text-slate-800 dark:text-white">
               assets xtb
             </h1>
           </div>
         </div>
 
-        <div className="flex gap-3">
+        <div className="flex gap-2 md:gap-3">
           <button
             onClick={exportData}
-            className="flex items-center gap-2 px-5 py-2.5 bg-white rounded-2xl border border-slate-200 text-[11px] font-black text-slate-500 hover:text-indigo-600 hover:border-indigo-100 hover:bg-indigo-50/30 transition-all shadow-sm uppercase tracking-wider"
+            className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 md:px-5 md:py-2.5 bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl border border-slate-200 dark:border-slate-700 text-[10px] md:text-[11px] font-black text-slate-500 dark:text-slate-400 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all shadow-sm uppercase tracking-wider"
           >
             <Download size={14} /> Eksportuj
           </button>
 
-          <label className="flex items-center gap-2 px-5 py-2.5 bg-white rounded-2xl border border-slate-200 text-[11px] font-black text-slate-500 hover:text-emerald-600 hover:border-emerald-100 hover:bg-emerald-50/30 cursor-pointer transition-all shadow-sm uppercase tracking-wider">
+          <label className="flex-1 md:flex-none flex items-center justify-center gap-2 px-4 py-2 md:px-5 md:py-2.5 bg-white dark:bg-slate-800 rounded-xl md:rounded-2xl border border-slate-200 dark:border-slate-700 text-[10px] md:text-[11px] font-black text-slate-500 dark:text-slate-400 hover:text-emerald-600 dark:hover:text-emerald-400 cursor-pointer transition-all shadow-sm uppercase tracking-wider">
             <Upload size={14} /> Importuj
             <input
               type="file"
@@ -255,38 +251,49 @@ export const YearsPage = () => {
       </header>
 
       {globalStats && (
-        <div className="max-w-7xl mx-auto mb-16 bg-white rounded-[40px] p-8 md:p-10 shadow-sm border border-slate-100 flex flex-col lg:flex-row gap-10 items-center">
+        <div className="max-w-7xl mx-auto mb-8 md:mb-16 bg-white dark:bg-slate-900/50 rounded-[30px] md:rounded-[40px] p-6 md:p-10 shadow-sm dark:shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col lg:flex-row gap-6 md:gap-10 items-center px-4 md:px-10">
           <div className="flex-1 w-full">
-            <h3 className="text-xl font-black text-slate-800 flex items-center gap-3 mb-6">
-              <Briefcase className="text-indigo-500" /> Stan Portfela (Łącznie)
+            <h3 className="text-base md:text-xl font-black text-slate-800 dark:text-white flex items-center gap-2 md:gap-3 mb-4 md:mb-6 uppercase italic tracking-tighter">
+              <Briefcase
+                className="text-indigo-500 dark:text-indigo-400"
+                size={18}
+              />{" "}
+              Stan Portfela (Łącznie)
             </h3>
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
-              <div className="bg-slate-50 p-6 rounded-[25px]">
-                <p className="text-[10px] font-black text-slate-400 uppercase mb-1">
+
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6">
+              <div className="bg-slate-50/50 dark:bg-slate-800/50 p-4 md:p-6 rounded-[20px] md:rounded-[25px] border border-slate-100/50 dark:border-slate-700/50">
+                <p className="text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase mb-1 tracking-widest">
                   Zainwestowane
                 </p>
-                <p className="text-2xl font-black">
+                <p className="text-xl md:text-2xl font-black text-slate-800 dark:text-white">
                   {globalStats.totalInvested.toLocaleString()}{" "}
-                  <span className="text-sm font-normal">PLN</span>
+                  <span className="text-[10px] md:text-sm font-bold text-slate-400 dark:text-slate-600 uppercase">
+                    PLN
+                  </span>
                 </p>
               </div>
-              <div className="bg-slate-50 p-6 rounded-[25px]">
-                <p className="text-[10px] font-black text-slate-400 uppercase mb-1">
+
+              <div className="bg-slate-50/50 dark:bg-slate-800/50 p-4 md:p-6 rounded-[20px] md:rounded-[25px] border border-slate-100/50 dark:border-slate-700/50">
+                <p className="text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase mb-1 tracking-widest">
                   Zysk Całkowity
                 </p>
                 <p
-                  className={`text-2xl font-black ${globalStats.totalProfit >= 0 ? "text-emerald-500" : "text-rose-500"}`}
+                  className={`text-xl md:text-2xl font-black ${globalStats.totalProfit >= 0 ? "text-emerald-500 dark:text-emerald-400" : "text-rose-500 dark:text-rose-400"}`}
                 >
                   {globalStats.totalProfit >= 0 ? "+" : ""}
                   {globalStats.totalProfit.toLocaleString()}{" "}
-                  <span className="text-sm font-normal">PLN</span>
+                  <span className="text-[10px] md:text-sm font-bold opacity-60 dark:opacity-40 uppercase">
+                    PLN
+                  </span>
                 </p>
               </div>
-              <div className="bg-slate-50 p-6 rounded-[25px]">
-                <p className="text-[10px] font-black text-slate-400 uppercase mb-1">
+
+              <div className="bg-slate-50/50 dark:bg-slate-800/50 p-4 md:p-6 rounded-[20px] md:rounded-[25px] border border-slate-100/50 dark:border-slate-700/50 flex flex-col justify-center">
+                <p className="text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase mb-1 tracking-widest">
                   Global ROI
                 </p>
-                <p className="text-3xl font-black text-emerald-500">
+                <p className="text-2xl md:text-3xl font-black text-indigo-600 dark:text-indigo-400 italic">
                   {globalStats.roi.toFixed(2)}%
                 </p>
               </div>
@@ -313,14 +320,14 @@ export const YearsPage = () => {
           onDragLeave={handleDragLeave}
           onDrop={handleDrop}
           className={`
-        relative p-8 rounded-[40px] shadow-xl flex flex-col items-center justify-center 
-        transition-all duration-300 cursor-pointer group min-h-[280px] border-4 border-dashed
-        ${
-          isDragging
-            ? "bg-indigo-800 border-white scale-[1.02] shadow-2xl"
-            : "bg-indigo-600 border-transparent hover:bg-indigo-700 shadow-indigo-200"
-        }
-      `}
+            relative p-6 md:p-8 rounded-[30px] md:rounded-[40px] shadow-xl flex flex-col items-center justify-center 
+            transition-all duration-300 cursor-pointer group min-h-[200px] md:min-h-[260px] border-2 md:border-4 border-dashed
+            ${
+              isDragging
+                ? "bg-indigo-800 dark:bg-indigo-900 border-white dark:border-indigo-400 scale-[1.01] shadow-2xl"
+                : "bg-indigo-600 dark:bg-indigo-700 border-transparent hover:bg-indigo-700 dark:hover:bg-indigo-600 shadow-indigo-100 dark:shadow-none"
+            }
+          `}
         >
           <input
             type="file"
@@ -335,33 +342,27 @@ export const YearsPage = () => {
             id="init-upload"
             accept=".xlsx"
           />
-
           <label
             htmlFor="init-upload"
             className="cursor-pointer flex flex-col items-center"
           >
             <div
-              className={`
-          h-20 w-20 rounded-full flex items-center justify-center mb-6 transition-all duration-500
-          ${isDragging ? "bg-white text-indigo-600 animate-bounce" : "bg-white/10 text-white group-hover:rotate-90"}
-        `}
+              className={`h-14 w-14 md:h-16 md:w-16 rounded-full flex items-center justify-center mb-4 transition-all duration-500
+              ${isDragging ? "bg-white dark:bg-indigo-400 text-indigo-600 dark:text-white animate-bounce" : "bg-white/10 text-white group-hover:rotate-90"}`}
             >
-              {isDragging ? <UploadCloud size={40} /> : <Plus size={40} />}
+              {isDragging ? <UploadCloud size={28} /> : <Plus size={28} />}
             </div>
-
-            <div className="text-center">
-              <span className="font-black text-2xl uppercase tracking-tight text-white block mb-1">
+            <div className="text-center px-4">
+              <span className="font-black text-lg md:text-xl uppercase tracking-tighter italic text-white block mb-1">
                 {isDragging ? "Upuść plik tutaj" : "Nowy Raport"}
               </span>
-              <p className="text-indigo-100 text-[10px] font-bold uppercase tracking-widest opacity-60">
+              <p className="text-indigo-100 dark:text-indigo-200/60 text-[9px] md:text-[10px] font-black uppercase tracking-widest opacity-60 italic">
                 Kliknij lub przeciągnij plik .xlsx
               </p>
             </div>
           </label>
-
-          {/* Efekt "poświaty" przy przeciąganiu */}
           {isDragging && (
-            <div className="absolute inset-4 border-2 border-white/20 rounded-[30px] animate-pulse pointer-events-none" />
+            <div className="absolute inset-2 md:inset-4 border-2 border-white/20 rounded-[25px] md:rounded-[30px] animate-pulse pointer-events-none" />
           )}
         </div>
       </div>

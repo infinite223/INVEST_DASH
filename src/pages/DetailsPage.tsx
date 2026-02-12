@@ -7,13 +7,13 @@ export const DetailsPage = () => {
   const { year, month } = useParams<{ year: string; month: string }>();
   const navigate = useNavigate();
   const { store } = usePortfolio();
+
   const activeReport = Object.values(store.reports).find(
     (r) => r.year === Number(year) && r.month === Number(month),
   );
 
   const calculateMonthlyDelta = (report: any) => {
     if (!report) return 0;
-
     const allReports = Object.values(store.reports);
     const prevReport = allReports.find((r) => {
       if (report.month === 1) {
@@ -21,20 +21,19 @@ export const DetailsPage = () => {
       }
       return r.year === report.year && r.month === report.month - 1;
     });
-
     if (!prevReport) return report.totalProfit;
     return report.totalProfit - prevReport.totalProfit;
   };
 
   if (!activeReport) {
     return (
-      <div className="min-h-screen bg-[#f8fafc] flex flex-col items-center justify-center p-6">
-        <h2 className="text-2xl font-black text-slate-800 mb-4">
+      <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950 flex flex-col items-center justify-center p-6 transition-colors duration-300">
+        <h2 className="text-2xl font-black text-slate-800 dark:text-white mb-4">
           Nie znaleziono raportu
         </h2>
         <button
           onClick={() => navigate(`/${year}`)}
-          className="text-indigo-600 font-bold uppercase text-sm tracking-widest hover:underline"
+          className="text-indigo-600 dark:text-indigo-400 font-bold uppercase text-sm tracking-widest hover:underline"
         >
           Wróć do listy miesięcy
         </button>
@@ -45,24 +44,24 @@ export const DetailsPage = () => {
   const currentDelta = calculateMonthlyDelta(activeReport);
 
   return (
-    <div className="min-h-screen bg-[#f8fafc] font-sans pb-20">
-      <div className="p-4 md:p-8 bg-white/80 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-100 mb-8 shadow-sm">
+    <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950 font-sans pb-20 transition-colors duration-300">
+      <div className="p-4 md:p-8 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-100 dark:border-slate-800 mb-8 shadow-sm dark:shadow-none">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button
             onClick={() => navigate(`/${year}`)}
-            className="group flex items-center gap-3 text-slate-400 font-black hover:text-indigo-600 transition-all uppercase text-[10px] tracking-widest"
+            className="group flex items-center gap-3 text-slate-400 dark:text-slate-500 font-black hover:text-indigo-600 dark:hover:text-indigo-400 transition-all uppercase text-[10px] tracking-widest"
           >
-            <div className="h-10 w-10 bg-slate-50 rounded-full flex items-center justify-center group-hover:-translate-x-1 transition-transform">
+            <div className="h-10 w-10 bg-slate-50 dark:bg-slate-800 rounded-full flex items-center justify-center group-hover:-translate-x-1 transition-transform border dark:border-slate-700">
               <ArrowLeft size={16} />
             </div>
-            Wróć do roku {year}
+            <span className="hidden xs:inline">Wróć do roku {year}</span>
           </button>
 
           <div className="text-right">
-            <p className="text-[10px] font-black text-slate-300 uppercase leading-none mb-1">
+            <p className="text-[10px] font-black text-slate-300 dark:text-slate-600 uppercase leading-none mb-1">
               Szczegóły okresu
             </p>
-            <p className="font-black text-slate-800 uppercase italic text-lg leading-none">
+            <p className="font-black text-slate-800 dark:text-white uppercase italic text-lg leading-none transition-colors">
               {new Date(0, activeReport.month - 1).toLocaleString("pl", {
                 month: "long",
               })}{" "}

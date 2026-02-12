@@ -93,7 +93,7 @@ export default function Dashboard({ report }: DashboardProps) {
   const SortIcon = ({ column }: { column: SortKeys }) => {
     if (sortConfig.key !== column) return <div className="w-4" />;
     return (
-      <span className="ml-1 text-indigo-500">
+      <span className="ml-1 text-indigo-500 dark:text-indigo-400">
         {sortConfig.order === "asc" ? (
           <ChevronUp size={14} />
         ) : (
@@ -104,11 +104,13 @@ export default function Dashboard({ report }: DashboardProps) {
   };
 
   return (
-    <div className="p-3 md:p-10 font-sans text-slate-900">
+    <div className="p-3 md:p-10 font-sans text-slate-900 dark:text-slate-100 transition-colors">
       <div className="max-w-6xl mx-auto space-y-6 md:space-y-8 animate-in fade-in duration-700">
+        {/* Sekcja Wykresów */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-8">
-          <div className="bg-white p-5 md:p-8 rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 min-h-[400px] flex flex-col">
-            <h3 className="text-lg md:text-xl font-black mb-6 text-slate-800 flex items-center gap-3">
+          {/* Wykres Alokacji */}
+          <div className="bg-white dark:bg-slate-900 p-5 md:p-8 rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 dark:border-slate-800 min-h-[400px] flex flex-col transition-colors">
+            <h3 className="text-lg md:text-xl font-black mb-6 text-slate-800 dark:text-white flex items-center gap-3">
               <PieChart className="text-indigo-500" size={20} /> Alokacja
             </h3>
             <div className="flex-1 w-full">
@@ -123,16 +125,21 @@ export default function Dashboard({ report }: DashboardProps) {
                     width={60}
                     style={{
                       fontWeight: "700",
-                      fill: "#64748b",
+                      fill: "currentColor",
                       fontSize: "11px",
                     }}
+                    className="text-slate-500 dark:text-slate-400"
                   />
                   <Tooltip
                     contentStyle={{
+                      backgroundColor: "rgb(15, 23, 42)",
                       borderRadius: "15px",
                       border: "none",
-                      boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)",
+                      boxShadow: "0 10px 15px -3px rgba(0,0,0,0.3)",
+                      color: "#fff",
                     }}
+                    itemStyle={{ color: "#fff" }}
+                    cursor={{ fill: "transparent" }}
                   />
                   <Bar
                     dataKey="value"
@@ -145,8 +152,9 @@ export default function Dashboard({ report }: DashboardProps) {
             </div>
           </div>
 
-          <div className="bg-white p-5 md:p-8 rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 min-h-[400px] flex flex-col">
-            <h3 className="text-lg md:text-xl font-black mb-6 text-slate-800 flex items-center gap-3">
+          {/* Wykres Wyników Delta */}
+          <div className="bg-white dark:bg-slate-900 p-5 md:p-8 rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 dark:border-slate-800 min-h-[400px] flex flex-col transition-colors">
+            <h3 className="text-lg md:text-xl font-black mb-6 text-slate-800 dark:text-white flex items-center gap-3">
               <TrendingUp className="text-emerald-500" size={20} /> Wynik (Delta
               m/m)
             </h3>
@@ -158,14 +166,21 @@ export default function Dashboard({ report }: DashboardProps) {
                     axisLine={false}
                     tickLine={false}
                     style={{
-                      fill: "#64748b",
+                      fill: "currentColor",
                       fontWeight: "700",
                       fontSize: "11px",
                     }}
+                    className="text-slate-500 dark:text-slate-400"
                   />
                   <YAxis hide />
                   <Tooltip
-                    contentStyle={{ borderRadius: "15px", border: "none" }}
+                    contentStyle={{
+                      backgroundColor: "rgb(15, 23, 42)",
+                      borderRadius: "15px",
+                      border: "none",
+                      color: "#fff",
+                    }}
+                    itemStyle={{ color: "#fff" }}
                   />
                   <Bar
                     dataKey="profit"
@@ -173,6 +188,7 @@ export default function Dashboard({ report }: DashboardProps) {
                       <Rectangle
                         {...p}
                         fill={p.payload.profit >= 0 ? "#10b981" : "#f43f5e"}
+                        fillOpacity={0.8}
                         radius={4}
                       />
                     )}
@@ -183,33 +199,34 @@ export default function Dashboard({ report }: DashboardProps) {
           </div>
         </div>
 
-        <div className="bg-white p-6 md:p-10 rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8 transition-all">
+        {/* Główne Statystyki (Portfel i Zysk) */}
+        <div className="bg-white dark:bg-slate-900 p-6 md:p-10 rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 dark:border-slate-800 flex flex-col lg:flex-row items-center justify-between gap-6 md:gap-8 transition-all">
           <div className="flex items-center gap-5 md:gap-8 w-full lg:w-auto text-center lg:text-left justify-center lg:justify-start">
-            <div className="h-14 w-14 md:h-20 md:w-20 bg-indigo-50 rounded-2xl md:rounded-3xl flex items-center justify-center text-indigo-600 shrink-0">
+            <div className="h-14 w-14 md:h-20 md:w-20 bg-indigo-50 dark:bg-indigo-500/10 rounded-2xl md:rounded-3xl flex items-center justify-center text-indigo-600 dark:text-indigo-400 shrink-0">
               <Wallet className="w-8 h-8 md:w-10 md:h-10" />
             </div>
             <div>
-              <p className="text-slate-400 font-bold uppercase tracking-widest text-[9px] md:text-[10px] mb-1">
+              <p className="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-[9px] md:text-[10px] mb-1">
                 Portfel {report.year}
               </p>
-              <p className="text-3xl md:text-5xl font-black text-slate-900 tracking-tight">
+              <p className="text-3xl md:text-5xl font-black text-slate-900 dark:text-white tracking-tight">
                 {totalInvested.toLocaleString("pl-PL", {
                   minimumFractionDigits: 2,
                 })}
-                <span className="text-lg md:text-2xl ml-1 md:ml-2 text-slate-300 font-bold font-sans">
+                <span className="text-lg md:text-2xl ml-1 md:ml-2 text-slate-300 dark:text-slate-700 font-bold font-sans">
                   PLN
                 </span>
               </p>
             </div>
           </div>
 
-          <div className="flex flex-col items-center lg:items-end border-t lg:border-t-0 lg:border-l border-slate-100 pt-6 lg:pt-0 lg:pl-12 w-full lg:w-auto">
-            <p className="text-slate-400 font-bold uppercase tracking-widest text-[9px] md:text-[10px] mb-1">
+          <div className="flex flex-col items-center lg:items-end border-t lg:border-t-0 lg:border-l border-slate-100 dark:border-slate-800 pt-6 lg:pt-0 lg:pl-12 w-full lg:w-auto">
+            <p className="text-slate-400 dark:text-slate-500 font-bold uppercase tracking-widest text-[9px] md:text-[10px] mb-1">
               Zysk netto (m/m)
             </p>
             <div className="flex flex-col items-center lg:items-end gap-2">
               <p
-                className={`text-2xl md:text-4xl font-black ${monthlyNetGain >= 0 ? "text-emerald-500" : "text-rose-500"}`}
+                className={`text-2xl md:text-4xl font-black ${monthlyNetGain >= 0 ? "text-emerald-500 dark:text-emerald-400" : "text-rose-500 dark:text-rose-400"}`}
               >
                 {monthlyNetGain >= 0 ? "+" : ""}
                 {monthlyNetGain.toLocaleString("pl-PL", {
@@ -218,7 +235,7 @@ export default function Dashboard({ report }: DashboardProps) {
                 <span className="text-base md:text-xl ml-1 font-bold">PLN</span>
               </p>
               <div
-                className={`px-3 py-1 rounded-full text-[10px] md:text-xs font-black shadow-sm ${monthlyNetGain >= 0 ? "bg-emerald-50 text-emerald-600" : "bg-rose-50 text-rose-600"}`}
+                className={`px-3 py-1 rounded-full text-[10px] md:text-xs font-black shadow-sm ${monthlyNetGain >= 0 ? "bg-emerald-50 dark:bg-emerald-500/10 text-emerald-600 dark:text-emerald-400" : "bg-rose-50 dark:bg-rose-500/10 text-rose-600 dark:text-rose-400"}`}
               >
                 {totalROI.toFixed(2)}% ROI m/m
               </div>
@@ -226,17 +243,18 @@ export default function Dashboard({ report }: DashboardProps) {
           </div>
         </div>
 
-        <div className="bg-white rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
+        {/* Tabela Pozycji */}
+        <div className="bg-white dark:bg-slate-900 rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden transition-colors">
           <div className="overflow-x-auto">
             <table className="w-full text-left border-collapse min-w-[500px] md:min-w-full">
               <thead>
-                <tr className="bg-slate-50/50">
-                  <th className="px-5 md:px-8 py-3 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                <tr className="bg-slate-50/50 dark:bg-slate-800/30">
+                  <th className="px-5 md:px-8 py-3 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                     Walor
                   </th>
                   <th
                     onClick={() => requestSort("purchaseValue")}
-                    className="px-5 md:px-8 py-3 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest text-right cursor-pointer hover:text-indigo-600 transition-colors"
+                    className="px-5 md:px-8 py-3 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                   >
                     <div className="flex items-center justify-end">
                       Kupno <SortIcon column="purchaseValue" />
@@ -244,7 +262,7 @@ export default function Dashboard({ report }: DashboardProps) {
                   </th>
                   <th
                     onClick={() => requestSort("monthlyProfitDelta")}
-                    className="px-5 md:px-8 py-3 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest text-right cursor-pointer hover:text-indigo-600 transition-colors"
+                    className="px-5 md:px-8 py-3 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                   >
                     <div className="flex items-center justify-end">
                       Delta <SortIcon column="monthlyProfitDelta" />
@@ -252,7 +270,7 @@ export default function Dashboard({ report }: DashboardProps) {
                   </th>
                   <th
                     onClick={() => requestSort("profit")}
-                    className="px-5 md:px-8 py-3 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest text-right cursor-pointer hover:text-indigo-600 transition-colors"
+                    className="px-5 md:px-8 py-3 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest text-right cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors"
                   >
                     <div className="flex items-center justify-end">
                       Total <SortIcon column="profit" />
@@ -260,33 +278,32 @@ export default function Dashboard({ report }: DashboardProps) {
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50">
+              <tbody className="divide-y divide-slate-50 dark:divide-slate-800">
                 {enrichedPositions.map((pos) => (
                   <tr
                     key={pos.symbol}
-                    className="hover:bg-slate-50/30 transition-colors"
+                    className="hover:bg-slate-50/30 dark:hover:bg-slate-800/20 transition-colors"
                   >
-                    {/* Zmniejszony font text-base na mobile, text-xl na desktop */}
-                    <td className="px-5 md:px-8 py-3 md:py-6 font-black text-base md:text-xl text-slate-800 italic uppercase">
+                    <td className="px-5 md:px-8 py-3 md:py-6 font-black text-base md:text-xl text-slate-800 dark:text-white italic uppercase transition-colors">
                       {pos.symbol}
                     </td>
-                    <td className="px-5 md:px-8 py-3 md:py-6 text-right font-bold text-slate-600 text-xs md:text-base">
+                    <td className="px-5 md:px-8 py-3 md:py-6 text-right font-bold text-slate-600 dark:text-slate-400 text-xs md:text-base">
                       {pos.purchaseValue.toLocaleString("pl-PL")}{" "}
-                      <span className="text-[8px] md:text-[9px] text-slate-300 font-normal">
+                      <span className="text-[8px] md:text-[9px] text-slate-300 dark:text-slate-700 font-normal transition-colors">
                         PLN
                       </span>
                     </td>
                     <td
                       className={`px-5 md:px-8 py-3 md:py-6 text-right font-black text-sm md:text-lg ${
                         pos.monthlyProfitDelta >= 0
-                          ? "text-emerald-500"
-                          : "text-rose-500"
+                          ? "text-emerald-500 dark:text-emerald-400"
+                          : "text-rose-500 dark:text-rose-400"
                       }`}
                     >
                       {pos.monthlyProfitDelta >= 0 ? "+" : ""}
                       {pos.monthlyProfitDelta.toLocaleString("pl-PL")}
                     </td>
-                    <td className="px-5 md:px-8 py-3 md:py-6 text-right font-bold text-slate-400 text-[10px] md:text-sm">
+                    <td className="px-5 md:px-8 py-3 md:py-6 text-right font-bold text-slate-400 dark:text-slate-500 text-[10px] md:text-sm">
                       {pos.profit >= 0 ? "+" : ""}
                       {pos.profit.toLocaleString("pl-PL")}
                     </td>

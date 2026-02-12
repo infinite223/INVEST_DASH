@@ -112,25 +112,25 @@ export const PortfolioTable = ({
 
   return (
     <div className="max-w-7xl mt-6 md:mt-8 mx-auto space-y-6 mb-8 px-2 md:px-0">
-      <div className="bg-white rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div
-          className="p-5 md:p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/30 cursor-pointer hover:bg-slate-50/60 transition-colors"
+          className="p-5 md:p-8 border-b border-slate-50 dark:border-slate-800 flex justify-between items-center bg-slate-50/30 dark:bg-slate-800/30 cursor-pointer hover:bg-slate-50/60 dark:hover:bg-slate-800/60 transition-colors"
           onClick={() => setIsExpanded(!isExpanded)}
         >
           <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
             <div className="flex items-center gap-2">
-              <Layers className="text-indigo-500 w-5 h-5 md:w-6 md:h-6" />
-              <h3 className="text-base md:text-xl font-black text-slate-800 uppercase italic tracking-tighter leading-none">
+              <Layers className="text-indigo-500 dark:text-indigo-400 w-5 h-5 md:w-6 md:h-6" />
+              <h3 className="text-base md:text-xl font-black text-slate-800 dark:text-white uppercase italic tracking-tighter leading-none">
                 Skład Portfela
               </h3>
             </div>
-            <span className="text-[10px] md:text-xs font-bold text-slate-400 normal-case italic tracking-normal md:mt-1">
+            <span className="text-[10px] md:text-xs font-bold text-slate-400 dark:text-slate-500 normal-case italic tracking-normal md:mt-1">
               ({positions.length} pozycji)
             </span>
           </div>
-          <div className="flex items-center gap-2 text-slate-400 font-black text-[9px] md:text-[10px] uppercase tracking-widest flex-shrink-0">
+          <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 font-black text-[9px] md:text-[10px] uppercase tracking-widest flex-shrink-0">
             <span>{isExpanded ? "Zwiń" : "Rozwiń"}</span>
-            <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-600 shadow-sm">
+            <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-sm">
               {isExpanded ? <ChevronUp size={14} /> : <ChevronDown size={14} />}
             </div>
           </div>
@@ -142,10 +142,10 @@ export const PortfolioTable = ({
           <div className="overflow-x-auto">
             <table className="w-full text-left min-w-[650px] md:min-w-full">
               <thead>
-                <tr className="bg-slate-50/50">
+                <tr className="bg-slate-50/50 dark:bg-slate-800/50">
                   <th
                     onClick={() => onRequestSort("symbol")}
-                    className="px-5 md:px-8 py-3 md:py-5 text-[9px] md:text-[10px] font-black text-slate-400 uppercase cursor-pointer hover:text-indigo-600"
+                    className="px-5 md:px-8 py-3 md:py-5 text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400"
                   >
                     Spółka{" "}
                     <SortIndicator
@@ -153,15 +153,15 @@ export const PortfolioTable = ({
                       order={sortConfig.order}
                     />
                   </th>
-                  <th className="px-5 md:px-8 py-3 md:py-5 text-[9px] md:text-[10px] font-black text-slate-400 uppercase text-right">
+                  <th className="px-5 md:px-8 py-3 md:py-5 text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase text-right">
                     Ilość
                   </th>
-                  <th className="px-5 md:px-8 py-3 md:py-5 text-[9px] md:text-[10px] font-black text-slate-400 uppercase text-right">
+                  <th className="px-5 md:px-8 py-3 md:py-5 text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase text-right">
                     Śr. Cena
                   </th>
                   <th
                     onClick={() => onRequestSort("purchaseValue")}
-                    className="px-5 md:px-8 py-3 md:py-5 text-[9px] md:text-[10px] font-black text-slate-400 uppercase text-right cursor-pointer hover:text-indigo-600"
+                    className="px-5 md:px-8 py-3 md:py-5 text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase text-right cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400"
                   >
                     Zainwestowano{" "}
                     <SortIndicator
@@ -171,7 +171,7 @@ export const PortfolioTable = ({
                   </th>
                   <th
                     onClick={() => onRequestSort("currPrice")}
-                    className="px-5 md:px-8 py-3 md:py-5 text-[9px] md:text-[10px] font-black text-slate-400 uppercase text-right cursor-pointer hover:text-indigo-600"
+                    className="px-5 md:px-8 py-3 md:py-5 text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase text-right cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400"
                   >
                     Akt. Cena{" "}
                     <SortIndicator
@@ -181,7 +181,7 @@ export const PortfolioTable = ({
                   </th>
                   <th
                     onClick={() => onRequestSort("profit")}
-                    className="px-5 md:px-8 py-3 md:py-5 text-[9px] md:text-[10px] font-black text-slate-400 uppercase text-right cursor-pointer hover:text-indigo-600"
+                    className="px-5 md:px-8 py-3 md:py-5 text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase text-right cursor-pointer hover:text-indigo-600 dark:hover:text-indigo-400"
                   >
                     Zysk Total{" "}
                     <SortIndicator
@@ -191,7 +191,7 @@ export const PortfolioTable = ({
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-slate-50 text-xs md:text-sm">
+              <tbody className="divide-y divide-slate-50 dark:divide-slate-800 text-xs md:text-sm">
                 {positions.map((pos) => {
                   const avgPrice =
                     pos.avgPurchasePrice ||
@@ -204,35 +204,35 @@ export const PortfolioTable = ({
                   return (
                     <tr
                       key={pos.symbol}
-                      className="hover:bg-slate-50/50 transition-colors"
+                      className="hover:bg-slate-50/50 dark:hover:bg-slate-800/30 transition-colors"
                     >
-                      <td className="px-5 md:px-8 py-3 md:py-5 font-black text-slate-800 uppercase italic text-sm md:text-base">
+                      <td className="px-5 md:px-8 py-3 md:py-5 font-black text-slate-800 dark:text-white uppercase italic text-sm md:text-base">
                         {pos.symbol}
                       </td>
-                      <td className="px-5 md:px-8 py-3 md:py-5 text-right font-bold text-slate-600">
+                      <td className="px-5 md:px-8 py-3 md:py-5 text-right font-bold text-slate-600 dark:text-slate-300">
                         {pos.volume.toLocaleString()}{" "}
-                        <span className="text-[8px] md:text-[10px] font-normal uppercase">
+                        <span className="text-[8px] md:text-[10px] font-normal uppercase opacity-60">
                           szt
                         </span>
                       </td>
-                      <td className="px-5 md:px-8 py-3 md:py-5 text-right font-bold text-slate-400">
+                      <td className="px-5 md:px-8 py-3 md:py-5 text-right font-bold text-slate-400 dark:text-slate-500">
                         {avgPrice.toLocaleString(undefined, {
                           minimumFractionDigits: 2,
                         })}
                       </td>
-                      <td className="px-5 md:px-8 py-3 md:py-5 text-right font-bold text-slate-800">
+                      <td className="px-5 md:px-8 py-3 md:py-5 text-right font-bold text-slate-800 dark:text-slate-200">
                         {pos.purchaseValue.toLocaleString()}{" "}
-                        <span className="text-[8px] md:text-[10px] font-normal uppercase">
+                        <span className="text-[8px] md:text-[10px] font-normal uppercase opacity-60">
                           PLN
                         </span>
                       </td>
-                      <td className="px-5 md:px-8 py-3 md:py-5 text-right font-black text-indigo-600">
+                      <td className="px-5 md:px-8 py-3 md:py-5 text-right font-black text-indigo-600 dark:text-indigo-400">
                         {currPrice.toLocaleString(undefined, {
                           minimumFractionDigits: 2,
                         })}
                       </td>
                       <td
-                        className={`px-5 md:px-8 py-3 md:py-5 text-right font-black ${pos.profit >= 0 ? "text-emerald-500" : "text-rose-500"}`}
+                        className={`px-5 md:px-8 py-3 md:py-5 text-right font-black ${pos.profit >= 0 ? "text-emerald-500 dark:text-emerald-400" : "text-rose-500 dark:text-rose-400"}`}
                       >
                         <div className="flex flex-col items-end leading-tight">
                           <span className="whitespace-nowrap">
@@ -257,22 +257,22 @@ export const PortfolioTable = ({
         </div>
       </div>
 
-      <div className="bg-white rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
+      <div className="bg-white dark:bg-slate-900 rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div
-          className="p-5 md:p-8 border-b border-slate-50 flex justify-between items-center bg-slate-50/30 cursor-pointer hover:bg-slate-50/60 transition-colors"
+          className="p-5 md:p-8 border-b border-slate-50 dark:border-slate-800 flex justify-between items-center bg-slate-50/30 dark:bg-slate-800/30 cursor-pointer hover:bg-slate-50/60 dark:hover:bg-slate-800/60 transition-colors"
           onClick={() => setIsChartExpanded(!isChartExpanded)}
         >
           <div className="flex flex-col md:flex-row md:items-center gap-1 md:gap-3">
             <div className="flex items-center gap-2">
-              <PieIcon className="text-indigo-500 w-5 h-5 md:w-6 md:h-6" />
-              <h3 className="text-base md:text-xl font-black text-slate-800 uppercase italic tracking-tighter leading-none">
+              <PieIcon className="text-indigo-500 dark:text-indigo-400 w-5 h-5 md:w-6 md:h-6" />
+              <h3 className="text-base md:text-xl font-black text-slate-800 dark:text-white uppercase italic tracking-tighter leading-none">
                 Struktura Alokacji Portfela
               </h3>
             </div>
           </div>
-          <div className="flex items-center gap-2 text-slate-400 font-black text-[9px] md:text-[10px] uppercase tracking-widest flex-shrink-0">
+          <div className="flex items-center gap-2 text-slate-400 dark:text-slate-500 font-black text-[9px] md:text-[10px] uppercase tracking-widest flex-shrink-0">
             <span>{isChartExpanded ? "Zwiń" : "Rozwiń"}</span>
-            <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-white border border-slate-100 flex items-center justify-center text-slate-600 shadow-sm">
+            <div className="h-7 w-7 md:h-8 md:w-8 rounded-full bg-white dark:bg-slate-800 border border-slate-100 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 shadow-sm">
               {isChartExpanded ? (
                 <ChevronUp size={14} />
               ) : (
@@ -303,8 +303,9 @@ export const PortfolioTable = ({
                     <Cell
                       key={`cell-${index}`}
                       fill={COLORS[index % COLORS.length]}
-                      stroke="#fff"
+                      stroke="currentColor"
                       strokeWidth={2}
+                      className="text-white dark:text-slate-900"
                     />
                   ))}
                 </Pie>
@@ -315,14 +316,14 @@ export const PortfolioTable = ({
                       const data = payload[0].payload;
                       const pct = ((data.value / totalValue) * 100).toFixed(1);
                       return (
-                        <div className="bg-white p-4 rounded-2xl shadow-xl border border-slate-100 ring-4 ring-slate-50">
-                          <p className="text-xs font-black text-indigo-600 uppercase italic">
+                        <div className="bg-white dark:bg-slate-800 p-4 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 ring-4 ring-slate-50 dark:ring-slate-900/50">
+                          <p className="text-xs font-black text-indigo-600 dark:text-indigo-400 uppercase italic">
                             {data.name}
                           </p>
-                          <p className="text-lg font-black text-slate-800">
+                          <p className="text-lg font-black text-slate-800 dark:text-white">
                             {Number(data.value).toLocaleString()} PLN
                           </p>
-                          <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">
+                          <p className="text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-widest">
                             {pct}% udziału
                           </p>
                         </div>
@@ -335,7 +336,7 @@ export const PortfolioTable = ({
             </ResponsiveContainer>
           </div>
 
-          <div className="px-5 pb-8 mt-8 flex flex-wrap justify-center gap-x-4 gap-y-3 md:gap-x-10 md:gap-y-6 border-t border-slate-50 pt-8">
+          <div className="px-5 pb-8 mt-8 flex flex-wrap justify-center gap-x-4 gap-y-3 md:gap-x-10 md:gap-y-6 border-t border-slate-50 dark:border-slate-800 pt-8">
             {allocationData.map((entry, index) => (
               <div
                 key={entry.name}
@@ -346,10 +347,10 @@ export const PortfolioTable = ({
                   style={{ backgroundColor: COLORS[index % COLORS.length] }}
                 />
                 <div className="flex flex-col">
-                  <span className="text-[10px] md:text-sm font-black text-slate-700 uppercase italic leading-none">
+                  <span className="text-[10px] md:text-sm font-black text-slate-700 dark:text-slate-200 uppercase italic leading-none">
                     {entry.name}
                   </span>
-                  <span className="text-[9px] md:text-xs font-bold text-slate-400 mt-0.5">
+                  <span className="text-[9px] md:text-xs font-bold text-slate-400 dark:text-slate-500 mt-0.5">
                     {((entry.value / totalValue) * 100).toFixed(1)}%
                   </span>
                 </div>
