@@ -228,15 +228,15 @@ export default function Dashboard({ report }: DashboardProps) {
 
         <div className="bg-white rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 overflow-hidden">
           <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse min-w-[600px]">
+            <table className="w-full text-left border-collapse min-w-[500px] md:min-w-full">
               <thead>
                 <tr className="bg-slate-50/50">
-                  <th className="px-5 md:px-8 py-4 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">
+                  <th className="px-5 md:px-8 py-3 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest">
                     Walor
                   </th>
                   <th
                     onClick={() => requestSort("purchaseValue")}
-                    className="px-5 md:px-8 py-4 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest text-right cursor-pointer hover:text-indigo-600 transition-colors"
+                    className="px-5 md:px-8 py-3 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest text-right cursor-pointer hover:text-indigo-600 transition-colors"
                   >
                     <div className="flex items-center justify-end">
                       Kupno <SortIcon column="purchaseValue" />
@@ -244,7 +244,7 @@ export default function Dashboard({ report }: DashboardProps) {
                   </th>
                   <th
                     onClick={() => requestSort("monthlyProfitDelta")}
-                    className="px-5 md:px-8 py-4 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest text-right cursor-pointer hover:text-indigo-600 transition-colors"
+                    className="px-5 md:px-8 py-3 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest text-right cursor-pointer hover:text-indigo-600 transition-colors"
                   >
                     <div className="flex items-center justify-end">
                       Delta <SortIcon column="monthlyProfitDelta" />
@@ -252,7 +252,7 @@ export default function Dashboard({ report }: DashboardProps) {
                   </th>
                   <th
                     onClick={() => requestSort("profit")}
-                    className="px-5 md:px-8 py-4 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest text-right cursor-pointer hover:text-indigo-600 transition-colors"
+                    className="px-5 md:px-8 py-3 md:py-6 text-[9px] md:text-[10px] font-black text-slate-400 uppercase tracking-widest text-right cursor-pointer hover:text-indigo-600 transition-colors"
                   >
                     <div className="flex items-center justify-end">
                       Total <SortIcon column="profit" />
@@ -266,22 +266,27 @@ export default function Dashboard({ report }: DashboardProps) {
                     key={pos.symbol}
                     className="hover:bg-slate-50/30 transition-colors"
                   >
-                    <td className="px-5 md:px-8 py-4 md:py-6 font-black text-lg md:text-xl text-slate-800 italic">
+                    {/* Zmniejszony font text-base na mobile, text-xl na desktop */}
+                    <td className="px-5 md:px-8 py-3 md:py-6 font-black text-base md:text-xl text-slate-800 italic uppercase">
                       {pos.symbol}
                     </td>
-                    <td className="px-5 md:px-8 py-4 md:py-6 text-right font-bold text-slate-600 text-sm md:text-base">
+                    <td className="px-5 md:px-8 py-3 md:py-6 text-right font-bold text-slate-600 text-xs md:text-base">
                       {pos.purchaseValue.toLocaleString("pl-PL")}{" "}
-                      <span className="text-[9px] text-slate-300 font-normal">
+                      <span className="text-[8px] md:text-[9px] text-slate-300 font-normal">
                         PLN
                       </span>
                     </td>
                     <td
-                      className={`px-5 md:px-8 py-4 md:py-6 text-right font-black text-sm md:text-lg ${pos.monthlyProfitDelta >= 0 ? "text-emerald-500" : "text-rose-500"}`}
+                      className={`px-5 md:px-8 py-3 md:py-6 text-right font-black text-sm md:text-lg ${
+                        pos.monthlyProfitDelta >= 0
+                          ? "text-emerald-500"
+                          : "text-rose-500"
+                      }`}
                     >
                       {pos.monthlyProfitDelta >= 0 ? "+" : ""}
                       {pos.monthlyProfitDelta.toLocaleString("pl-PL")}
                     </td>
-                    <td className="px-5 md:px-8 py-4 md:py-6 text-right font-bold text-slate-400 text-xs md:text-sm">
+                    <td className="px-5 md:px-8 py-3 md:py-6 text-right font-bold text-slate-400 text-[10px] md:text-sm">
                       {pos.profit >= 0 ? "+" : ""}
                       {pos.profit.toLocaleString("pl-PL")}
                     </td>
