@@ -75,9 +75,8 @@ export const MonthsPage = () => {
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950 p-6 px-3 md:p-10 font-sans transition-colors duration-300">
       <div className="max-w-7xl mx-auto">
-        {/* Przycisk Powrotu */}
         <button
-          onClick={() => navigate("/")}
+          onClick={() => navigate("/history")}
           className="group flex items-center gap-3 text-slate-400 dark:text-slate-500 font-black mb-8 hover:text-indigo-600 dark:hover:text-indigo-400 transition-all uppercase text-[10px] md:text-xs tracking-widest"
         >
           <div className="h-8 w-8 bg-white dark:bg-slate-900 rounded-full flex items-center justify-center shadow-sm dark:shadow-none border dark:border-slate-800 group-hover:-translate-x-1 transition-transform">
@@ -86,12 +85,10 @@ export const MonthsPage = () => {
           Powrót do lat
         </button>
 
-        {/* Nagłówek Roku */}
         <h2 className="text-3xl md:text-5xl font-black mb-8 md:mb-12 tracking-tighter italic text-slate-800 dark:text-white transition-colors">
           Rok {year}
         </h2>
 
-        {/* Siatka Miesięcy */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mb-16">
           {monthsInYear.map((report) => {
             const deltaProfit = calculateMonthlyDelta(report);
@@ -112,7 +109,6 @@ export const MonthsPage = () => {
             );
           })}
 
-          {/* Empty State */}
           {monthsInYear.length === 0 && (
             <div className="col-span-full py-20 text-center bg-white dark:bg-slate-900 rounded-[40px] border border-dashed border-slate-200 dark:border-slate-800">
               <p className="text-slate-400 dark:text-slate-600 font-bold italic">
@@ -122,7 +118,6 @@ export const MonthsPage = () => {
           )}
         </div>
 
-        {/* Podsumowanie Roczne */}
         {monthsInYear.length > 0 && (
           <div className="animate-in fade-in slide-in-from-bottom-4 duration-500">
             <YearlySummary

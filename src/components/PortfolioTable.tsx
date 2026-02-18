@@ -60,7 +60,7 @@ export const PortfolioTable = ({
   );
 
   const renderCustomLabel = (props: PieLabelRenderProps) => {
-    if (isMobile) return undefined; // Całkowite wyłączenie na mobile
+    if (isMobile) return undefined;
 
     const {
       cx = 0,
@@ -111,7 +111,7 @@ export const PortfolioTable = ({
   };
 
   return (
-    <div className="max-w-7xl mt-6 md:mt-8 mx-auto space-y-6 mb-8 px-2 md:px-0">
+    <div className="max-w-7xl mt-6 md:mt-8 mx-auto space-y-6 mb-8 md:px-0">
       <div className="bg-white dark:bg-slate-900 rounded-[30px] md:rounded-[40px] shadow-sm border border-slate-100 dark:border-slate-800 overflow-hidden">
         <div
           className="p-5 md:p-8 border-b border-slate-50 dark:border-slate-800 flex justify-between items-center bg-slate-50/30 dark:bg-slate-800/30 cursor-pointer hover:bg-slate-50/60 dark:hover:bg-slate-800/60 transition-colors"

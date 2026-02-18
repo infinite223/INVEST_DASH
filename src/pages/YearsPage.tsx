@@ -78,13 +78,24 @@ export const YearsPage = () => {
       if (a.year !== b.year) return a.year - b.year;
       return a.month - b.month;
     });
+
     if (allReports.length === 0) return null;
 
     const latestReport = allReports[allReports.length - 1];
-    const totalProfit = allReports.reduce(
+
+    // 1. Zysk tylko z kursu akcji (Monthly Delta sum)
+    const stockProfit = allReports.reduce(
       (sum, r) => sum + calculateMonthlyDelta(r),
       0,
     );
+
+    // 2. Zysk z dywidend (wszystkie otrzymane)
+    const dividendProfit = (store.plannedDividends || [])
+      .filter((d) => d.status === "received")
+      .reduce((sum, d) => sum + (d.totalAmount || 0), 0);
+
+    // 3. Łączny zysk
+    const totalAbsoluteProfit = stockProfit + dividendProfit;
 
     const sortedPositions = [...latestReport.positions].sort((a, b) => {
       let aVal: any, bVal: any;
@@ -106,14 +117,16 @@ export const YearsPage = () => {
 
     return {
       totalInvested: latestReport.totalInvested,
-      totalProfit,
+      stockProfit,
+      dividendProfit,
+      totalAbsoluteProfit,
       roi:
         latestReport.totalInvested !== 0
-          ? (totalProfit / latestReport.totalInvested) * 100
+          ? (totalAbsoluteProfit / latestReport.totalInvested) * 100
           : 0,
       latestPositions: sortedPositions,
     };
-  }, [store.reports, portfolioSort]);
+  }, [store.reports, store.plannedDividends, portfolioSort]);
 
   const calculateYearlyStats = (year: number) => {
     const yearReports = Object.values(store.reports).filter(
@@ -251,51 +264,70 @@ export const YearsPage = () => {
       </header>
 
       {globalStats && (
-        <div className="max-w-7xl mx-auto mb-8 md:mb-16 bg-white dark:bg-slate-900/50 rounded-[30px] md:rounded-[40px] p-6 md:p-10 shadow-sm dark:shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col lg:flex-row gap-6 md:gap-10 items-center px-4 md:px-10">
-          <div className="flex-1 w-full">
-            <h3 className="text-base md:text-xl font-black text-slate-800 dark:text-white flex items-center gap-2 md:gap-3 mb-4 md:mb-6 uppercase italic tracking-tighter">
+        <div className="max-w-7xl mx-auto mb-8 md:mb-16 bg-white dark:bg-slate-900/50 rounded-[30px] md:rounded-[40px] p-6 md:p-10 shadow-sm dark:shadow-2xl border border-slate-100 dark:border-slate-800 flex flex-col gap-6 md:gap-10 px-4 md:px-10">
+          <div className="w-full">
+            <h3 className="text-base md:text-xl font-black text-slate-800 dark:text-white flex items-center gap-2 md:gap-3 mb-6 md:mb-8 uppercase italic tracking-tighter">
               <Briefcase
                 className="text-indigo-500 dark:text-indigo-400"
                 size={18}
-              />{" "}
-              Stan Portfela (Łącznie)
+              />
+              Stan Portfela (Podsumowanie Główne)
             </h3>
 
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 md:gap-6">
-              <div className="bg-slate-50/50 dark:bg-slate-800/50 p-4 md:p-6 rounded-[20px] md:rounded-[25px] border border-slate-100/50 dark:border-slate-700/50">
+            {/* Główny Grid Statystyk */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+              {/* 1. Zainwestowane */}
+              <div className="bg-slate-50/50 dark:bg-slate-800/50 p-5 rounded-[25px] border border-slate-100/50 dark:border-slate-700/50">
                 <p className="text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase mb-1 tracking-widest">
                   Zainwestowane
                 </p>
                 <p className="text-xl md:text-2xl font-black text-slate-800 dark:text-white">
                   {globalStats.totalInvested.toLocaleString()}{" "}
-                  <span className="text-[10px] md:text-sm font-bold text-slate-400 dark:text-slate-600 uppercase">
+                  <span className="text-[10px] md:text-sm font-bold text-slate-400 uppercase">
                     PLN
                   </span>
                 </p>
               </div>
 
-              <div className="bg-slate-50/50 dark:bg-slate-800/50 p-4 md:p-6 rounded-[20px] md:rounded-[25px] border border-slate-100/50 dark:border-slate-700/50">
+              {/* 2. Zysk z Akcji */}
+              <div className="bg-slate-50/50 dark:bg-slate-800/50 p-5 rounded-[25px] border border-slate-100/50 dark:border-slate-700/50">
                 <p className="text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase mb-1 tracking-widest">
-                  Zysk Całkowity
+                  Zysk z akcji
                 </p>
                 <p
-                  className={`text-xl md:text-2xl font-black ${globalStats.totalProfit >= 0 ? "text-emerald-500 dark:text-emerald-400" : "text-rose-500 dark:text-rose-400"}`}
+                  className={`text-xl md:text-2xl font-black ${globalStats.stockProfit >= 0 ? "text-emerald-500" : "text-rose-500"}`}
                 >
-                  {globalStats.totalProfit >= 0 ? "+" : ""}
-                  {globalStats.totalProfit.toLocaleString()}{" "}
-                  <span className="text-[10px] md:text-sm font-bold opacity-60 dark:opacity-40 uppercase">
-                    PLN
-                  </span>
+                  {globalStats.stockProfit >= 0 ? "+" : ""}
+                  {globalStats.stockProfit.toLocaleString()}{" "}
+                  <span className="text-[10px] opacity-60">PLN</span>
                 </p>
               </div>
 
-              <div className="bg-slate-50/50 dark:bg-slate-800/50 p-4 md:p-6 rounded-[20px] md:rounded-[25px] border border-slate-100/50 dark:border-slate-700/50 flex flex-col justify-center">
+              {/* 3. Zysk z Dywidend */}
+              <div className="bg-slate-50/50 dark:bg-slate-800/50 p-5 rounded-[25px] border border-slate-100/50 dark:border-slate-700/50">
                 <p className="text-[9px] md:text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase mb-1 tracking-widest">
-                  Global ROI
+                  Dywidendy
                 </p>
-                <p className="text-2xl md:text-3xl font-black text-indigo-600 dark:text-indigo-400 italic">
-                  {globalStats.roi.toFixed(2)}%
+                <p className="text-xl md:text-2xl font-black text-amber-500">
+                  +{globalStats.dividendProfit.toLocaleString()}{" "}
+                  <span className="text-[10px] opacity-60">PLN</span>
                 </p>
+              </div>
+
+              {/* 4. Łączny Wynik & ROI */}
+              <div className="bg-indigo-600 dark:bg-indigo-500 p-5 rounded-[25px] shadow-lg shadow-indigo-200 dark:shadow-none text-white">
+                <p className="text-[9px] font-black text-indigo-100 uppercase mb-1 tracking-widest">
+                  Wynik Całkowity
+                </p>
+                <div className="flex items-baseline gap-2">
+                  <p className="text-xl md:text-2xl font-black">
+                    {globalStats.totalAbsoluteProfit >= 0 ? "+" : ""}
+                    {globalStats.totalAbsoluteProfit.toLocaleString()}
+                  </p>
+                  <span className="text-sm font-black italic text-indigo-200">
+                    ({globalStats.roi.toFixed(2)}%)
+                  </span>
+                </div>
               </div>
             </div>
           </div>
