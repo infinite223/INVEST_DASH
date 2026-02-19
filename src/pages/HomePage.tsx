@@ -1,5 +1,5 @@
 import React, { useMemo, useState } from "react";
-import { Briefcase, TrendingUp, Wallet, DollarSign } from "lucide-react";
+import { Briefcase, TrendingUp, DollarSign } from "lucide-react";
 import { usePortfolio } from "../hooks/usePortfolio";
 import { PortfolioTable } from "../components/PortfolioTable";
 import { PortfolioSortKeys, SortOrder } from "../types";
@@ -114,7 +114,6 @@ export const HomePage = () => {
       </header>
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12">
-        {/* GŁÓWNA KARTA (HERO) - Wynik całkowity */}
         <div className="md:col-span-8 lg:col-span-6 bg-slate-900 dark:bg-indigo-950 rounded-[40px] p-8 text-white relative overflow-hidden flex flex-col justify-between min-h-[220px] shadow-2xl shadow-indigo-200 dark:shadow-none">
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-1">
@@ -138,13 +137,11 @@ export const HomePage = () => {
             </div>
           </div>
 
-          {/* Dekoracyjne tło */}
           <div className="absolute -right-8 -bottom-8 opacity-10 text-white transform -rotate-12">
             <TrendingUp size={240} strokeWidth={3} />
           </div>
         </div>
 
-        {/* PRAWY PANEL - Kapitał i Dywidendy (Układ pionowy) */}
         <div className="md:col-span-4 lg:col-span-3 flex flex-col gap-6">
           <div className="flex-1 bg-white dark:bg-slate-900 p-6 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-center">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
@@ -171,7 +168,6 @@ export const HomePage = () => {
           </div>
         </div>
 
-        {/* OSTATNI KAfelek - Zysk z kursu (Wyróżniony styl) */}
         <div className="md:col-span-12 lg:col-span-3 bg-white dark:bg-slate-900 p-8 rounded-[40px] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between items-center text-center lg:text-left lg:items-start relative overflow-hidden">
           <div className="relative z-10">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4 italic">
@@ -195,7 +191,6 @@ export const HomePage = () => {
                 : "Market Bearish"}
             </div>
           </div>
-          {/* Subtelny wykres w tle */}
           <div className="absolute bottom-0 right-0 left-0 h-1/2 opacity-[0.03] pointer-events-none">
             <svg
               viewBox="0 0 100 100"

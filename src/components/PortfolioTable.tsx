@@ -336,7 +336,7 @@ export const PortfolioTable = ({
             </ResponsiveContainer>
           </div>
 
-          <div className="px-5 pb-8 mt-8 flex flex-wrap justify-center gap-x-4 gap-y-3 md:gap-x-10 md:gap-y-6 border-t border-slate-50 dark:border-slate-800 pt-8">
+          <div className="m-auto pb-8 mt-8 flex flex-wrap justify-center gap-x-4 gap-y-3 md:gap-x-10 md:gap-y-6 border-t border-slate-50 dark:border-slate-800 pt-8">
             {allocationData.map((entry, index) => (
               <div
                 key={entry.name}
@@ -347,10 +347,10 @@ export const PortfolioTable = ({
                   style={{ backgroundColor: COLORS[index % COLORS.length] }}
                 />
                 <div className="flex flex-col">
-                  <span className="text-[10px] md:text-sm font-black text-slate-700 dark:text-slate-200 uppercase italic leading-none">
+                  <span className="text-[14px] md:text-sm font-black text-slate-700 dark:text-slate-200 uppercase italic leading-none">
                     {entry.name}
                   </span>
-                  <span className="text-[9px] md:text-xs font-bold text-slate-400 dark:text-slate-500 mt-0.5">
+                  <span className="text-[12px] md:text-xs font-bold text-slate-400 dark:text-slate-500 mt-0.5">
                     {((entry.value / totalValue) * 100).toFixed(1)}%
                   </span>
                 </div>

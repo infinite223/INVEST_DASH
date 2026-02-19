@@ -74,7 +74,6 @@ export const MonthsPage = () => {
 
   return (
     <div className="min-h-screen bg-[#f8fafc] dark:bg-slate-950 font-sans pb-20 transition-colors duration-300">
-      {/* Sticky Header - Identyczny jak w DetailsPage */}
       <div className="p-4 md:p-8 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl sticky top-0 z-40 border-b border-slate-100 dark:border-slate-800 mb-8 shadow-sm dark:shadow-none">
         <div className="max-w-7xl mx-auto flex justify-between items-center">
           <button
@@ -99,7 +98,6 @@ export const MonthsPage = () => {
       </div>
 
       <div className="max-w-7xl mx-auto px-4 md:px-8">
-        {/* Sekcja kart miesięcy */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8 mb-16">
           {monthsInYear.map((report) => {
             const deltaProfit = calculateMonthlyDelta(report);
@@ -133,7 +131,6 @@ export const MonthsPage = () => {
           )}
         </div>
 
-        {/* Podsumowanie Roczne */}
         {monthsInYear.length > 0 && (
           <div className="animate-in fade-in slide-in-from-bottom-6 duration-700">
             <header className="mb-6">

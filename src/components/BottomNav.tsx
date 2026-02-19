@@ -29,7 +29,7 @@ export const BottomNav = ({
   );
 
   return (
-    <div className="fixed bottom-0 left-0 right-0 z-50 px-2 pb-8 pt-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800">
+    <div className="fixed bottom-0 left-0 right-0 z-50 px-2 py-4 bg-white/80 dark:bg-slate-900/80 backdrop-blur-xl border-t border-slate-100 dark:border-slate-800">
       <div className="max-w-lg mx-auto flex justify-between items-center">
         {navItem("/", Home, "Home")}
         {navItem("/history", Calendar, "Lata")}
@@ -50,7 +50,7 @@ export const BottomNav = ({
             onClick={() => fileInputRef.current?.click()}
             className="bg-indigo-600 text-white p-4 rounded-2xl shadow-lg shadow-indigo-200 dark:shadow-none active:scale-90 transition-transform flex items-center justify-center"
           >
-            <Plus size={28} strokeWidth={3} />
+            <Plus size={25} strokeWidth={2} />
           </button>
         </div>
 

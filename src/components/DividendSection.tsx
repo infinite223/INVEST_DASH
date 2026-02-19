@@ -20,6 +20,7 @@ import {
   ResponsiveContainer,
   Cell,
 } from "recharts";
+import { formatCurrency } from "../utils/formatters";
 
 interface DividendSectionProps {
   dividends: any[];
@@ -258,10 +259,7 @@ export const DividendSection = ({
                             <td className="px-5 md:px-8 py-3 md:py-5 text-right font-black text-emerald-500 dark:text-emerald-400 text-sm md:text-lg leading-tight">
                               <div className="flex flex-col items-end">
                                 <span>
-                                  +{" "}
-                                  {div.totalAmount?.toLocaleString(undefined, {
-                                    minimumFractionDigits: 2,
-                                  })}{" "}
+                                  + {formatCurrency(div.totalAmount)}{" "}
                                   <span className="text-[9px] md:text-[10px] opacity-60">
                                     PLN
                                   </span>
@@ -415,11 +413,7 @@ export const DividendSection = ({
                       Miesięcznie
                     </span>
                     <span className="text-xs md:text-sm font-bold text-slate-700 dark:text-slate-300">
-                      ~{" "}
-                      {perMonth.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                      })}{" "}
-                      zł
+                      ~ {formatCurrency(perMonth)} zł
                     </span>
                   </div>
                   <div className="flex justify-between items-center">
@@ -427,10 +421,7 @@ export const DividendSection = ({
                       Na godzinę
                     </span>
                     <span className="text-xs md:text-sm font-black text-indigo-600 dark:text-indigo-400">
-                      {perHour.toLocaleString(undefined, {
-                        minimumFractionDigits: 2,
-                      })}{" "}
-                      zł
+                      {formatCurrency(perHour)} zł
                     </span>
                   </div>
                 </div>

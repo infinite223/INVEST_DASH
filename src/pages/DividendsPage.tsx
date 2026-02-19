@@ -3,6 +3,7 @@ import { DollarSign, TrendingUp } from "lucide-react";
 import { usePortfolio } from "../hooks/usePortfolio";
 import { DividendSection } from "../components/DividendSection";
 import { DividendSortKeys, SortOrder } from "../types";
+import { formatCurrency } from "../utils/formatters";
 
 export const DividendsPage = () => {
   const { store, addPlannedDividend, removePlannedDividend } = usePortfolio();
@@ -64,15 +65,27 @@ export const DividendsPage = () => {
   }, [store.plannedDividends, latestPositions, divSort]);
 
   const divStats = useMemo(() => {
-    const received = sortedDividends
+    const currentYear = new Date().getFullYear();
+
+    const dividendsThisYear = sortedDividends.filter((d) => {
+      const payDate = new Date(d.payDate);
+      return payDate.getFullYear() === currentYear;
+    });
+
+    const received = dividendsThisYear
       .filter((d) => d.status === "received")
       .reduce((sum, d) => sum + (d.totalAmount || 0), 0);
 
-    const planned = sortedDividends
+    const planned = dividendsThisYear
       .filter((d) => d.status === "planned")
       .reduce((sum, d) => sum + (d.totalAmount || 0), 0);
 
-    return { received, planned, total: received + planned };
+    return {
+      received,
+      planned,
+      total: received + planned,
+      currentYear,
+    };
   }, [sortedDividends]);
 
   return (
@@ -92,10 +105,10 @@ export const DividendsPage = () => {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12">
         <div className="bg-white dark:bg-slate-900 p-6 rounded-[30px] border border-slate-100 dark:border-slate-800 shadow-sm">
           <p className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-1">
-            Otrzymane
+            Otrzymane w {new Date().getFullYear()}
           </p>
           <p className="text-2xl font-black text-emerald-500">
-            {divStats.received.toLocaleString()}{" "}
+            {formatCurrency(divStats.received)}{" "}
             <span className="text-xs">PLN</span>
           </p>
         </div>
@@ -104,7 +117,7 @@ export const DividendsPage = () => {
             Zaplanowane
           </p>
           <p className="text-2xl font-black text-amber-500">
-            {divStats.planned.toLocaleString()}{" "}
+            {formatCurrency(divStats.planned)}{" "}
             <span className="text-xs">PLN</span>
           </p>
         </div>
@@ -113,7 +126,7 @@ export const DividendsPage = () => {
             Suma Roczna (Prognoza)
           </p>
           <p className="text-2xl font-black">
-            {divStats.total.toLocaleString()}{" "}
+            {formatCurrency(divStats.total)}{" "}
             <span className="text-xs opacity-70">PLN</span>
           </p>
         </div>
