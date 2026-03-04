@@ -1,6 +1,50 @@
 import * as XLSX from "xlsx";
 import { Dividend, OpenPosition } from "../types";
 
+export const processClosedPositions = async (file: File): Promise<number> => {
+  const data = await file.arrayBuffer();
+  const workbook = XLSX.read(data);
+
+  const sheetName = "CLOSED POSITION HISTORY";
+  const worksheet = workbook.Sheets[sheetName];
+
+  if (!worksheet) {
+    console.warn("Nie znaleziono arkusza zamkniętych pozycji.");
+    return 0;
+  }
+
+  const jsonData = XLSX.utils.sheet_to_json(worksheet, {
+    header: 1,
+  }) as any[][];
+
+  const headerRow = jsonData.find((row) => row.includes("Gross P/L"));
+  if (!headerRow) return 0;
+  const grossIndex = headerRow.indexOf("Gross P/L");
+
+  const totalRow = jsonData.find(
+    (row) =>
+      row[0] === "Total" ||
+      (typeof row[0] === "string" && row[0].includes("Total")),
+  );
+
+  if (totalRow && totalRow[grossIndex] !== undefined) {
+    const finalValue = parseFloat(totalRow[grossIndex]);
+    return !isNaN(finalValue) ? finalValue : 0;
+  }
+
+  const totalClosedProfit = jsonData.reduce((sum, row) => {
+    const isDataRow = typeof row[0] === "number";
+    const value = parseFloat(row[grossIndex]);
+
+    if (isDataRow && !isNaN(value) && typeof row[grossIndex] === "number") {
+      return sum + value;
+    }
+    return sum;
+  }, 0);
+
+  return totalClosedProfit;
+};
+
 const excelDateToJS = (excelDate: any): Date => {
   if (excelDate instanceof Date) return excelDate;
   const dateNum = parseFloat(excelDate);

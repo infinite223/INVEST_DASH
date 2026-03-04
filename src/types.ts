@@ -17,6 +17,7 @@ export interface MonthData {
   totalInvested: number;
   totalProfit: number;
   monthlyNetGain: number;
+  closedProfit: number;
 }
 
 export interface Dividend {

@@ -68,11 +68,17 @@ export const HomePage = () => {
           : -1;
     });
 
+    const realizedProfit = allReports.reduce(
+      (sum, r) => sum + (r.closedProfit || 0),
+      0,
+    );
+
     return {
       totalInvested: latestReport.totalInvested,
       stockProfit,
       dividendProfit,
       totalAbsoluteProfit,
+      realizedProfit,
       roi:
         latestReport.totalInvested !== 0
           ? (totalAbsoluteProfit / latestReport.totalInvested) * 100
@@ -117,8 +123,8 @@ export const HomePage = () => {
         </h1>
       </header>
 
-      <div className="grid grid-cols-1 md:grid-cols-12 gap-6 mb-12">
-        <div className="md:col-span-8 lg:col-span-6 bg-slate-900 dark:bg-indigo-950 rounded-[40px] p-8 text-white relative overflow-hidden flex flex-col justify-between min-h-[220px] shadow-2xl shadow-indigo-200 dark:shadow-none">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 mb-12">
+        <div className="lg:col-span-7 bg-slate-900 dark:bg-indigo-950 rounded-[40px] p-8 text-white relative overflow-hidden flex flex-col justify-between min-h-[280px] shadow-2xl shadow-indigo-200 dark:shadow-none">
           <div className="relative z-10">
             <div className="flex items-center gap-3 mb-1">
               <div className="p-2 bg-indigo-500/20 rounded-xl text-indigo-300">
@@ -128,28 +134,28 @@ export const HomePage = () => {
                 Łączny zwrot z inwestycji
               </span>
             </div>
-            <div className="mt-4">
-              <h2 className="text-6xl md:text-7xl font-black italic tracking-tighter leading-none">
+            <div className="mt-8">
+              <h2 className="text-7xl md:text-8xl font-black italic tracking-tighter leading-none">
                 {globalStats.roi.toFixed(2)}
                 <span className="text-indigo-400 text-3xl ml-1">%</span>
               </h2>
-              <p className="text-indigo-200/80 font-bold mt-2 text-lg italic">
+              <p className="text-indigo-200/80 font-bold mt-4 text-xl italic">
                 {globalStats.totalAbsoluteProfit >= 0 ? "+" : ""}
                 {globalStats.totalAbsoluteProfit.toLocaleString()}{" "}
-                <span className="text-sm">PLN PROFIT</span>
+                <span className="text-sm">PLN TOTAL PROFIT</span>
               </p>
             </div>
           </div>
 
-          <div className="absolute -right-8 -bottom-8 opacity-10 text-white transform -rotate-12">
-            <TrendingUp size={240} strokeWidth={3} />
+          <div className="absolute -right-12 -bottom-12 opacity-10 text-white transform -rotate-12">
+            <TrendingUp size={320} strokeWidth={3} />
           </div>
         </div>
 
-        <div className="md:col-span-4 lg:col-span-3 flex flex-col gap-6">
-          <div className="flex-1 bg-white dark:bg-slate-900 p-6 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-center">
+        <div className="lg:col-span-5 grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div className="sm:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-[32px] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-center">
             <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">
-              Wkład własny
+              Całkowity Wkład własny
             </span>
             <p className="text-3xl font-black text-slate-800 dark:text-white tracking-tight">
               {globalStats.totalInvested.toLocaleString()}
@@ -159,9 +165,21 @@ export const HomePage = () => {
             </p>
           </div>
 
-          <div className="flex-1 bg-amber-50/50 dark:bg-amber-900/10 p-6 rounded-[32px] border border-amber-100/50 dark:border-amber-500/10 flex flex-col justify-center">
-            <div className="flex items-center gap-2 mb-1 text-amber-600">
-              <DollarSign size={14} strokeWidth={3} />
+          <div className="bg-emerald-50/50 dark:bg-emerald-900/10 p-6 rounded-[32px] border border-emerald-100/50 dark:border-emerald-500/10 flex flex-col justify-between min-h-[140px]">
+            <div className="flex items-center gap-2 text-emerald-600">
+              <Briefcase size={16} strokeWidth={3} />
+              <span className="text-[10px] font-black uppercase tracking-widest">
+                Zrealizowany zysk
+              </span>
+            </div>
+            <p className="text-3xl font-black text-emerald-600 tracking-tight">
+              +{globalStats.realizedProfit.toLocaleString()}
+            </p>
+          </div>
+
+          <div className="bg-amber-50/50 dark:bg-amber-900/10 p-6 rounded-[32px] border border-amber-100/50 dark:border-amber-500/10 flex flex-col justify-between min-h-[140px]">
+            <div className="flex items-center gap-2 text-amber-600">
+              <DollarSign size={16} strokeWidth={3} />
               <span className="text-[10px] font-black uppercase tracking-widest">
                 Dywidendy netto
               </span>
@@ -169,47 +187,6 @@ export const HomePage = () => {
             <p className="text-3xl font-black text-amber-600 tracking-tight">
               +{globalStats.dividendProfit.toLocaleString()}
             </p>
-          </div>
-        </div>
-
-        <div className="md:col-span-12 lg:col-span-3 bg-white dark:bg-slate-900 p-8 rounded-[40px] border border-slate-100 dark:border-slate-800 shadow-sm flex flex-col justify-between items-center text-center lg:text-left lg:items-start relative overflow-hidden">
-          <div className="relative z-10">
-            <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest block mb-4 italic">
-              Zysk z kursu (akcje)
-            </span>
-            <p
-              className={`text-4xl font-black leading-none ${globalStats.stockProfit >= 0 ? "text-emerald-500" : "text-rose-500"}`}
-            >
-              {globalStats.stockProfit >= 0 ? "+" : ""}
-              {globalStats.stockProfit.toLocaleString()}
-            </p>
-            <div
-              className={`mt-4 inline-flex items-center gap-2 px-3 py-1 rounded-full text-[10px] font-black uppercase ${
-                globalStats.stockProfit >= 0
-                  ? "bg-emerald-50 text-emerald-600"
-                  : "bg-rose-50 text-rose-600"
-              }`}
-            >
-              {globalStats.stockProfit >= 0
-                ? "Market Bullish"
-                : "Market Bearish"}
-            </div>
-          </div>
-          <div className="absolute bottom-0 right-0 left-0 h-1/2 opacity-[0.03] pointer-events-none">
-            <svg
-              viewBox="0 0 100 100"
-              className="w-full h-full preserve-aspect-ratio-none"
-            >
-              <path
-                d="M0,100 C20,80 40,90 60,40 C80,10 100,30 100,0 L100,100 Z"
-                fill="currentColor"
-                className={
-                  globalStats.stockProfit >= 0
-                    ? "text-emerald-500"
-                    : "text-rose-500"
-                }
-              />
-            </svg>
           </div>
         </div>
       </div>

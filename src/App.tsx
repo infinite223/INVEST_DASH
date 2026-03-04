@@ -12,6 +12,7 @@ import { BottomNav } from "./components/BottomNav";
 import { UploadModal } from "./components/UploadModal";
 import { usePortfolio } from "./hooks/usePortfolio";
 import {
+  processClosedPositions,
   processDividendsFromExcel,
   processOpenPositions,
 } from "./utils/excelParser";
@@ -35,7 +36,9 @@ export default function App() {
     if (pendingFile) {
       try {
         const positionsData = await processOpenPositions(pendingFile);
-        addReport(selectedYear, selectedMonth, positionsData);
+        const closedProfit = await processClosedPositions(pendingFile);
+
+        addReport(selectedYear, selectedMonth, positionsData, closedProfit);
 
         try {
           const historicalDividends =
@@ -49,6 +52,10 @@ export default function App() {
 
         setIsModalOpen(false);
         setPendingFile(null);
+
+        setTimeout(() => {
+          window.location.reload();
+        }, 100);
       } catch (error) {
         console.error("Błąd podczas przetwarzania pliku:", error);
         alert(

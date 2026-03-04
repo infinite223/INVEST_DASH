@@ -5,14 +5,14 @@ import {
   Upload,
   Info,
   ShieldCheck,
-  Github,
   Database,
   RefreshCw,
+  Trash2,
 } from "lucide-react";
 import { usePortfolio } from "../hooks/usePortfolio";
 
 export const SettingsPage = () => {
-  const { exportData, importData } = usePortfolio();
+  const { exportData, importData, resetAllData } = usePortfolio();
 
   const handleImport = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -83,8 +83,8 @@ export const SettingsPage = () => {
               Kopia Zapasowa
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-8 flex-1">
-              Wyeksportuj wszystkie swoje dane (raporty, dywidendy, ustawienia)
-              do pliku .json. Możesz go przechowywać jako backup.
+              Wyeksportuj wszystkie swoje dane do pliku .json. Możesz go
+              przechowywać jako backup.
             </p>
             <button
               onClick={exportData}
@@ -102,8 +102,7 @@ export const SettingsPage = () => {
               Przywracanie
             </h3>
             <p className="text-xs text-slate-500 dark:text-slate-400 mb-8 flex-1">
-              Wgraj plik .json wygenerowany wcześniej przez aplikację, aby
-              przywrócić swój portfel na innym urządzeniu.
+              Wgraj plik .json, aby przywrócić swój portfel na innym urządzeniu.
             </p>
             <label className="flex items-center justify-center gap-3 w-full py-4 bg-slate-800 hover:bg-slate-900 dark:bg-slate-700 dark:hover:bg-slate-600 text-white rounded-2xl font-black uppercase text-xs tracking-widest cursor-pointer transition-all">
               <Upload size={16} /> Importuj Dane
@@ -125,30 +124,36 @@ export const SettingsPage = () => {
                 Twoja Prywatność
               </h4>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                Assets TRACK działa w 100% lokalnie. Twoje pliki Excel oraz
-                wygenerowane raporty nigdy nie trafiają na żaden serwer.
-                Wszystkie obliczenia i dane są przechowywane w pamięci Twojej
-                przeglądarki (LocalStorage). Eksportując dane, tworzysz jedyną
-                fizyczną kopię swojego portfela poza przeglądarką.
+                Assets TRACK działa w 100% lokalnie. Wszystkie obliczenia i dane
+                są przechowywane w pamięci Twojej przeglądarki.
               </p>
             </div>
           </div>
         </div>
 
-        {/* <div className="flex justify-center gap-8 pt-4">
-          <a
-            href="#"
-            className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase hover:text-indigo-500 transition-colors"
-          >
-            <Github size={14} /> Documentation
-          </a>
-          <a
-            href="#"
-            className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase hover:text-indigo-500 transition-colors"
-          >
-            Changelog
-          </a>
-        </div> */}
+        <div className="p-8 bg-slate-50 dark:bg-slate-900/40 rounded-[35px] border border-slate-100 dark:border-slate-800">
+          <div className="flex flex-col md:flex-row items-center justify-between gap-6">
+            <div className="flex items-center gap-4">
+              <div className="h-12 w-12 bg-slate-100 dark:bg-slate-800 rounded-2xl flex items-center justify-center text-slate-500">
+                <RefreshCw size={24} />
+              </div>
+              <div>
+                <h4 className="font-black text-slate-700 dark:text-slate-200 uppercase text-sm tracking-tight">
+                  Zarządzanie Pamięcią
+                </h4>
+                <p className="text-[10px] text-slate-400 dark:text-slate-500 font-bold uppercase tracking-wider">
+                  Przywracanie ustawień fabrycznych
+                </p>
+              </div>
+            </div>
+            <button
+              onClick={resetAllData}
+              className="w-full md:w-auto px-8 py-4 bg-transparent text-slate-400 border border-slate-200 dark:border-slate-700 hover:border-rose-500 hover:text-rose-500 rounded-2xl font-black uppercase text-xs tracking-widest transition-all"
+            >
+              Usuń dane lokalne
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

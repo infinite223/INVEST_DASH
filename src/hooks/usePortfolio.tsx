@@ -30,12 +30,15 @@ export const usePortfolio = () => {
     year: number,
     month: number,
     positions: OpenPosition[],
+    closedProfit: number = 0,
   ) => {
     const id = `${year}-${month.toString().padStart(2, "0")}`;
+
     const totalInvested = positions.reduce(
       (sum, p) => sum + p.purchaseValue,
       0,
     );
+
     const totalProfit = positions.reduce((sum, p) => sum + p.profit, 0);
 
     const prevMonthId =
@@ -44,6 +47,7 @@ export const usePortfolio = () => {
         : `${year}-${(month - 1).toString().padStart(2, "0")}`;
 
     const prevReport = store.reports[prevMonthId];
+
     const monthlyNetGain = prevReport
       ? totalProfit - prevReport.totalProfit
       : totalProfit;
@@ -55,6 +59,7 @@ export const usePortfolio = () => {
       positions,
       totalInvested,
       totalProfit,
+      closedProfit,
       monthlyNetGain,
     };
 
@@ -76,6 +81,17 @@ export const usePortfolio = () => {
       ...prev,
       plannedDividends: prev.plannedDividends.filter((d) => d.id !== id),
     }));
+  };
+
+  const resetAllData = () => {
+    if (
+      window.confirm(
+        "CZY NA PEWNO? Wszystkie dane raportów i dywidend zostaną bezpowrotnie usunięte.",
+      )
+    ) {
+      localStorage.removeItem("invest_dash_data");
+      window.location.reload();
+    }
   };
 
   const addReceivedDividends = (dividends: Dividend[]) => {
@@ -142,5 +158,6 @@ export const usePortfolio = () => {
     exportData,
     importData,
     completeFirstVisit,
+    resetAllData,
   };
 };
