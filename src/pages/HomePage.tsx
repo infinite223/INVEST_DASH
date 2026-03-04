@@ -102,9 +102,13 @@ export const HomePage = () => {
     <div className="p-4 md:p-8 max-w-7xl mx-auto animate-in fade-in slide-in-from-bottom-4 duration-700">
       <header className="mb-8 md:mb-12">
         <div className="flex items-center gap-2 mb-2">
-          <div className="h-1 w-8 bg-indigo-600 rounded-full" />
+          <img
+            src="/icon.png"
+            alt="App Logo"
+            className="w-8 h-8 object-contain"
+          />{" "}
           <p className="text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">
-            Live Dashboard
+            Assets TRACK
           </p>
         </div>
         <h1 className="text-3xl md:text-5xl font-black text-slate-800 dark:text-white uppercase italic tracking-tighter">

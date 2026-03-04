@@ -1,8 +1,8 @@
 {
   "$schema": "../node_modules/@tauri-apps/cli/config.schema.json",
-  "productName": "Assets XTB",
+  "productName": "Assets TRACK",
   "version": "0.1.1",
-  "identifier": "com.assets-xtb.vercel.app",
+  "identifier": "com.assets-track.vercel.app",
   "build": {
     "frontendDist": "../dist",
     "devUrl": "http://localhost:5173",
@@ -12,7 +12,7 @@
   "app": {
     "windows": [
       {
-        "title": "assets-xtb",
+        "title": "assets-track",
         "width": 800,
         "height": 600,
         "resizable": true,

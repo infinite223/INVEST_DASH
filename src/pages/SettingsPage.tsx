@@ -55,7 +55,7 @@ export const SettingsPage = () => {
             </div>
             <div className="flex-1 text-center md:text-left">
               <h2 className="text-2xl font-black text-slate-800 dark:text-white uppercase italic">
-                ASSETS XTB
+                ASSETS TRACK
               </h2>
               <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-2 leading-relaxed">
                 Zaawansowany manager portfela inwestycyjnego dedykowany dla
@@ -125,7 +125,7 @@ export const SettingsPage = () => {
                 Twoja Prywatność
               </h4>
               <p className="text-xs text-slate-500 dark:text-slate-400 mt-1 leading-relaxed">
-                Assets XTB działa w 100% lokalnie. Twoje pliki Excel oraz
+                Assets TRACK działa w 100% lokalnie. Twoje pliki Excel oraz
                 wygenerowane raporty nigdy nie trafiają na żaden serwer.
                 Wszystkie obliczenia i dane są przechowywane w pamięci Twojej
                 przeglądarki (LocalStorage). Eksportując dane, tworzysz jedyną
@@ -135,7 +135,7 @@ export const SettingsPage = () => {
           </div>
         </div>
 
-        <div className="flex justify-center gap-8 pt-4">
+        {/* <div className="flex justify-center gap-8 pt-4">
           <a
             href="#"
             className="flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase hover:text-indigo-500 transition-colors"
@@ -148,7 +148,7 @@ export const SettingsPage = () => {
           >
             Changelog
           </a>
-        </div>
+        </div> */}
       </div>
     </div>
   );

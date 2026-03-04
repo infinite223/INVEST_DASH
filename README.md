@@ -1,8 +1,8 @@
-# 🚀 ASSETS-XTB
+# 🚀 ASSETS-TRACK
 
-**ASSETS-XTB** is a modern, high-performance investment portfolio tracker built with React. The application offers deep analytics of monthly performance, asset allocation, and dividend forecasting by instantly processing XTB stock reports.
+**ASSETS-TRACK** is a modern, high-performance investment portfolio tracker built with React. The application offers deep analytics of monthly performance, asset allocation, and dividend forecasting by instantly processing XTB stock reports.
 
-> **🌐 Live Web Version:** [https://assets-xtb.vercel.app/](https://assets-xtb.vercel.app/)
+> **🌐 Live Web Version:** [https://assets-track.vercel.app/](https://assets-track.vercel.app/)
 
 ## ✨ Key Features
 

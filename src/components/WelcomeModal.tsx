@@ -30,7 +30,7 @@ export const WelcomeModal = ({ onClose }: { onClose: () => void }) => {
             </div>
             <div>
               <h2 className="text-xl md:text-3xl font-black italic tracking-tighter text-slate-800 dark:text-white uppercase leading-none">
-                Witaj w assets xtb
+                Witaj w assets track
               </h2>
               <p className="text-indigo-500 dark:text-indigo-400 font-bold text-[9px] md:text-xs uppercase tracking-widest mt-1">
                 Twój osobisty analityk portfela

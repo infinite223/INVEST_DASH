@@ -235,7 +235,7 @@ export const YearsPage = () => {
               />
             </div>
             <h1 className="uppercase text-2xl md:text-4xl font-black tracking-tighter italic text-slate-800 dark:text-white">
-              assets xtb
+              assets track
             </h1>
           </div>
         </div>

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useLayoutEffect } from "react";
 import { ONBOARDING_STEPS } from "../utils/const";
 
 export const Tutorial = () => {
-  const [currentStep, setCurrentStep] = useState(-1); // -1 oznacza ekran powitalny
+  const [currentStep, setCurrentStep] = useState(-1);
   const [isVisible, setIsVisible] = useState(false);
   const [coords, setCoords] = useState({
     top: 0,
