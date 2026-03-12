@@ -1,6 +1,6 @@
 {
   "expo": {
-    "name": "assets-track",
+    "name": "Assets Track",
     "slug": "assets-track",
     "version": "1.0.0",
     "web": {
@@ -18,7 +18,7 @@
       "backgroundColor": "#ffffff",
       "barStyle": "dark-content"
     },
-    "plugins": ["expo-router"],
+    "plugins": ["expo-router", "@react-native-community/datetimepicker"],
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",

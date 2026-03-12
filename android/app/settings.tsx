@@ -26,7 +26,7 @@ export default function SettingsPage() {
             Konfiguracja Systemu
           </Text>
         </View>
-        <Text className="text-4xl font-black uppercase italic tracking-tighter text-slate-800">
+        <Text className="text-2xl font-black uppercase italic tracking-tighter text-slate-800">
           Ustawienia <Text className="text-indigo-600">&</Text> Dane
         </Text>
       </View>

@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Slot } from 'expo-router';
+import { Slot, useRouter } from 'expo-router';
 import { usePortfolio } from '../hooks/usePortfolio';
 import * as FileSystem from 'expo-file-system/legacy';
 import {
@@ -12,10 +12,11 @@ import { BottomNav } from 'components/BottomNav';
 import '../global.css';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 import { View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 
 export default function RootLayout() {
   const { addReport, addPlannedDividend } = usePortfolio();
-
+  const router = useRouter();
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [pendingFileUri, setPendingFileUri] = useState<string | null>(null);
   const [selectedYear, setSelectedYear] = useState(new Date().getFullYear());
@@ -46,6 +47,12 @@ export default function RootLayout() {
         console.warn('Brak arkusza dywidend w pliku.');
       }
 
+      router.replace('/settings');
+
+      setTimeout(() => {
+        router.replace('/');
+      }, 100);
+
       setIsModalOpen(false);
       setPendingFileUri(null);
     } catch (error) {
@@ -69,6 +76,7 @@ export default function RootLayout() {
           selectedMonth={selectedMonth}
           setSelectedMonth={setSelectedMonth}
         />
+        <StatusBar style="light" />
       </SafeAreaView>
     </SafeAreaProvider>
   );

@@ -4,9 +4,10 @@ import { Briefcase, TrendingUp, DollarSign } from 'lucide-react-native';
 import { usePortfolio } from '../hooks/usePortfolio';
 import { PortfolioSortKeys, SortOrder } from '../types';
 import { PortfolioTable } from 'components/PortfolioTable';
+import { WelcomeModal } from 'components/WelcomeModal';
 
 export default function HomePage() {
-  const { store } = usePortfolio();
+  const { store, completeFirstVisit, isLoaded } = usePortfolio();
   const [portfolioSort, setPortfolioSort] = useState<{
     key: PortfolioSortKeys;
     order: SortOrder;
@@ -70,9 +71,15 @@ export default function HomePage() {
     };
   }, [store.reports, store.plannedDividends, portfolioSort]);
 
+  if (!isLoaded) {
+    return;
+  }
+
   if (!globalStats) {
     return (
       <View className="flex-1 items-center justify-center bg-white p-6">
+        <WelcomeModal visible={store.isFirstVisit} onClose={completeFirstVisit} />
+
         <View className="mb-6 h-20 w-20 items-center justify-center rounded-full bg-slate-100">
           <Briefcase size={32} />
         </View>
@@ -86,10 +93,18 @@ export default function HomePage() {
   return (
     <ScrollView className="flex-1 bg-white p-4" contentContainerStyle={{ paddingBottom: 120 }}>
       <View className="mb-8">
-        <Text className="text-xs font-black uppercase tracking-widest text-slate-400">
-          Assets TRACK
-        </Text>
-        <Text className="text-3xl font-black uppercase italic tracking-tighter text-slate-800">
+        <View className="mb-1 flex-row items-center gap-2">
+          <Image
+            source={require('../assets/icon.png')}
+            style={{ width: 35, height: 35 }}
+            className="rounded-md"
+          />
+          <Text className="text-xs font-black uppercase tracking-widest text-slate-500">
+            Assets TRACK
+          </Text>
+        </View>
+
+        <Text className="text-2xl font-black uppercase italic tracking-tighter text-slate-800">
           Podsumowanie Portfela
         </Text>
       </View>
@@ -101,7 +116,7 @@ export default function HomePage() {
             Łączny zwrot
           </Text>
         </View>
-        <Text className="text-7xl font-black italic tracking-tighter text-white">
+        <Text className="text-4xl font-black italic tracking-tighter text-white">
           {globalStats.roi.toFixed(2)}
           <Text className="text-3xl text-indigo-400">%</Text>
         </Text>

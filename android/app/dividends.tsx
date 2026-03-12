@@ -48,7 +48,7 @@ export default function DividendsPage() {
         <Text className="mb-1 text-[10px] font-black uppercase tracking-[0.2em] text-amber-500">
           Pasywny Dochód
         </Text>
-        <Text className="text-4xl font-black uppercase italic tracking-tighter text-slate-800">
+        <Text className="text-2xl font-black uppercase italic tracking-tighter text-slate-800">
           Kalendarz <Text className="text-amber-500">Dywidend</Text>
         </Text>
       </View>

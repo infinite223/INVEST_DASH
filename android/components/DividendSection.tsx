@@ -3,7 +3,8 @@ import { View, Text, TouchableOpacity, TextInput, Dimensions } from 'react-nativ
 import { BarChart } from 'react-native-chart-kit';
 import { DollarSign, Trash2, ChevronDown, ChevronUp, BarChart3 } from 'lucide-react-native';
 import { formatCurrency } from '../utils/formatters';
-
+import RNPickerSelect from 'react-native-picker-select';
+import DateTimePicker from '@react-native-community/datetimepicker'; // Import biblioteki
 export const DividendSection = ({
   dividends,
   form,
@@ -16,6 +17,15 @@ export const DividendSection = ({
 }: any) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const screenWidth = Dimensions.get('window').width;
+  const [showPicker, setShowPicker] = useState(false);
+
+  const onDateChange = (event: any, selectedDate?: Date) => {
+    setShowPicker(false);
+    if (selectedDate) {
+      const formattedDate = selectedDate.toISOString().split('T')[0];
+      onFormChange('date', formattedDate);
+    }
+  };
 
   const monthlyData = useMemo(() => {
     const months = [
@@ -46,13 +56,33 @@ export const DividendSection = ({
     <View className="gap-6">
       <View className="rounded-[30px] border border-slate-100 bg-white p-6">
         <Text className="mb-4 text-lg font-black">Planuj Dywidendę</Text>
-        <TextInput
-          placeholder="Symbol"
-          className="mb-3 rounded-xl bg-slate-50 p-4 font-bold"
-          value={form.symbol}
-          onChangeText={(v) => onFormChange('symbol', v)}
-          placeholderTextColor="#94a3b8"
-        />
+        <View className="mb-3 h-[56px] justify-center rounded-xl bg-slate-50">
+          <RNPickerSelect
+            onValueChange={(value) => onFormChange('symbol', value)}
+            items={availableSymbols.map((s: string) => ({ label: s, value: s }))}
+            placeholder={{ label: 'Wybierz spółkę...', value: null }}
+            value={form.symbol}
+            Icon={() => null}
+            useNativeAndroidPickerStyle={false}
+            style={{
+              inputIOS: {
+                paddingHorizontal: 16,
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: '#334155',
+              },
+              inputAndroid: {
+                paddingHorizontal: 16,
+                fontSize: 16,
+                fontWeight: 'bold',
+                color: '#334155',
+              },
+              inputWeb: {
+                paddingHorizontal: 16,
+              },
+            }}
+          />
+        </View>
         <TextInput
           placeholder="Stopa (%)"
           className="mb-3 rounded-xl bg-slate-50 p-4 font-bold"
@@ -61,13 +91,23 @@ export const DividendSection = ({
           onChangeText={(v) => onFormChange('yield', v)}
           placeholderTextColor="#94a3b8"
         />
-        <TextInput
-          placeholder="Data (YYYY-MM-DD)"
-          className="mb-4 rounded-xl bg-slate-50 p-4 font-bold"
-          placeholderTextColor="#94a3b8"
-          value={form.date}
-          onChangeText={(v) => onFormChange('date', v)}
-        />
+        <TouchableOpacity
+          onPress={() => setShowPicker(true)}
+          className="mb-4 rounded-xl bg-slate-50 p-4">
+          <Text className={form.date ? 'font-bold text-slate-800' : 'font-bold text-slate-400'}>
+            {form.date || 'Data wypłaty...'}
+          </Text>
+        </TouchableOpacity>
+
+        {showPicker && (
+          <DateTimePicker
+            value={form.date ? new Date(form.date) : new Date()}
+            mode="date"
+            placeholderText="Data wypłaty..."
+            display="default"
+            onChange={onDateChange}
+          />
+        )}
         <TouchableOpacity onPress={onSave} className="items-center rounded-xl bg-indigo-600 p-4">
           <Text className="font-black uppercase text-white">Dodaj do planu</Text>
         </TouchableOpacity>

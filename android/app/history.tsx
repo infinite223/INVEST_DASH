@@ -46,7 +46,7 @@ export default function HistoryPage() {
             Archiwum
           </Text>
         </View>
-        <Text className="text-4xl font-black uppercase italic tracking-tighter text-slate-800">
+        <Text className="text-2xl font-black uppercase italic tracking-tighter text-slate-800">
           Historia Inwestycji
         </Text>
       </View>

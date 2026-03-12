@@ -1,15 +1,6 @@
-import React from 'react';
-import { Modal, View, Text, TouchableOpacity, StyleSheet, ScrollView } from 'react-native';
-
-interface UploadModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  onUpload: () => void;
-  selectedYear: number;
-  setSelectedYear: (year: number) => void;
-  selectedMonth: number;
-  setSelectedMonth: (month: number) => void;
-}
+import React, { useState } from 'react';
+import { Modal, View, Text, TouchableOpacity, StyleSheet } from 'react-native';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export const UploadModal = ({
   isOpen,
@@ -19,55 +10,63 @@ export const UploadModal = ({
   setSelectedYear,
   selectedMonth,
   setSelectedMonth,
-}: UploadModalProps) => {
+}: any) => {
+  const [showPicker, setShowPicker] = useState(false);
+
+  const currentDate = new Date(selectedYear, selectedMonth - 1, 1);
+
+  const onDateChange = (event: any, date?: Date) => {
+    setShowPicker(false);
+    if (date) {
+      setSelectedYear(date.getFullYear());
+      setSelectedMonth(date.getMonth() + 1);
+    }
+  };
+
   return (
     <Modal visible={isOpen} transparent animationType="fade">
       <View style={styles.overlay}>
         <View style={styles.modalContent}>
-          <Text style={styles.title}>Dane raportu</Text>
+          <Text style={styles.title}>Data raportu</Text>
 
-          {/* Sekcja Roku */}
-          <Text style={styles.label}>ROK</Text>
-          <View style={styles.row}>
-            {[2024, 2025, 2026].map((y) => (
-              <TouchableOpacity
-                key={y}
-                onPress={() => setSelectedYear(y)}
-                style={[styles.box, selectedYear === y && styles.activeBox]}>
-                <Text style={[styles.text, selectedYear === y && styles.activeText]}>{y}</Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          <Text style={styles.label}>WYBIERZ MIESIĄC I ROK</Text>
+          <TouchableOpacity style={styles.dateSelector} onPress={() => setShowPicker(true)}>
+            <Text style={styles.dateText}>
+              {currentDate.toLocaleDateString('pl-PL', { month: 'long', year: 'numeric' })}
+            </Text>
+          </TouchableOpacity>
 
-          {/* Sekcja Miesiąca */}
-          <Text style={styles.label}>MIESIĄC</Text>
-          <View style={styles.grid}>
-            {Array.from({ length: 12 }, (_, i) => (
-              <TouchableOpacity
-                key={i + 1}
-                onPress={() => setSelectedMonth(i + 1)}
-                style={[styles.box, selectedMonth === i + 1 && styles.activeBox]}>
-                <Text style={[styles.text, selectedMonth === i + 1 && styles.activeText]}>
-                  {(i + 1).toString().padStart(2, '0')}
-                </Text>
-              </TouchableOpacity>
-            ))}
-          </View>
+          {showPicker && (
+            <DateTimePicker
+              value={currentDate}
+              mode="date"
+              display="spinner"
+              onChange={onDateChange}
+            />
+          )}
 
           <TouchableOpacity style={styles.saveButton} onPress={onUpload}>
             <Text style={styles.saveButtonText}>ZAPISZ RAPORT</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity onPress={onClose} style={styles.cancelButton}>
-            <Text style={styles.cancelButtonText}>ANULUJ</Text>
           </TouchableOpacity>
         </View>
       </View>
     </Modal>
   );
 };
-
 const styles = StyleSheet.create({
+  dateSelector: {
+    backgroundColor: '#f1f5f9',
+    padding: 20,
+    borderRadius: 20,
+    marginBottom: 30,
+    alignItems: 'center',
+  },
+  dateText: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#4f46e5',
+    textTransform: 'capitalize',
+  },
   overlay: {
     flex: 1,
     backgroundColor: 'rgba(0,0,0,0.6)',
